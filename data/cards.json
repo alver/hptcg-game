@@ -1,0 +1,168 @@
+{
+    "hermione_granger_starter":
+    {
+        "name": "Hermione Granger",
+        "image": "assets/cards/hermione_granger.webp",
+        "type": "character",
+        "effectCode": "hermione_double_lesson"
+    },
+    "draco_malfoy_starter":
+    {
+        "name": "Draco Malfoy",
+        "image": "assets/cards/draco_malfoy.webp",
+        "type": "character",
+        "effectCode": "draco_hand_disruption"
+    },
+    "lesson_comc":
+    {
+        "name": "Care of Magical Creatures",
+        "image": "assets/cards/care_of_magical_creatures.webp",
+        "type": "lesson",
+        "lessonType": "F"
+    },
+    "lesson_charms":
+    {
+        "name": "Charms",
+        "image": "assets/cards/charms.webp",
+        "type": "lesson",
+        "lessonType": "C"
+    },
+    "lesson_transfiguration":
+    {
+        "name": "Transfiguration",
+        "image": "assets/cards/transfiguration.webp",
+        "type": "lesson",
+        "lessonType": "T"
+    },
+    "accio":
+    {
+        "name": "Accio",
+        "image": "assets/cards/accio.webp",
+        "type": "spell",
+        "powerCost": 4,
+        "lessonCostType": "C",
+        "effectCode": "damage_opponent_3"
+    },
+    "boa_constrictor":
+    {
+        "name": "Boa Constrictor",
+        "image": "assets/cards/boa_constrictor.webp",
+        "type": "creature",
+        "powerCost": 4,
+        "lessonCostType": "F",
+        "damage": 2,
+        "health": 1
+    },
+    "curious_raven":
+    {
+        "name": "Curious Raven",
+        "image": "assets/cards/curious_raven.webp",
+        "type": "creature",
+        "powerCost": 2,
+        "lessonCostType": "F",
+        "damage": 1,
+        "health": 1
+    },
+    "hagrid_and_the_stranger":
+    {
+        "name": "Hagrid and the Stranger",
+        "image": "assets/cards/hagrid_and_the_stranger.webp",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "F",
+        "effectCode": "damage_opponent_3"
+    },
+    "magical_mishap":
+    {
+        "name": "Magical Mishap",
+        "image": "assets/cards/magical_mishap.webp",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "C",
+        "effectCode": "damage_opponent_1"
+    },
+    "stupefy":
+    {
+        "name": "Stupefy",
+        "image": "assets/cards/stupefy.webp",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "C",
+        "effectCode": "damage_opponent_4"
+    },
+    "surly_hound":
+    {
+        "name": "Surly Hound",
+        "image": "assets/cards/surly_hound.webp",
+        "type": "creature",
+        "powerCost": 5,
+        "lessonCostType": "F",
+        "damage": 2,
+        "health": 3
+    },
+    "vermillious":
+    {
+        "name": "Vermillious",
+        "image": "assets/cards/vermillious.webp",
+        "type": "spell",
+        "powerCost": 1,
+        "lessonCostType": "C",
+        "effectCode": "damage_opponent_1"
+    },
+    "avifors":
+    {
+        "name": "Avifors",
+        "image": "assets/cards/avifors.webp",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "T",
+        "effectCode": "discard_opponent_lesson_F"
+    },
+    "vicious_wolf":
+    {
+        "name": "Vicious Wolf",
+        "image": "assets/cards/vicious_wolf.webp",
+        "type": "creature",
+        "powerCost": 6,
+        "lessonCostType": "F",
+        "damage": 3,
+        "health": 3
+    },
+    "epoximise":
+    {
+        "name": "Epoximise",
+        "image": "assets/cards/epoximise.webp",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "T",
+        "effectCode": "discard_opponent_lesson_C"
+    },
+    "forest_troll":
+    {
+        "name": "Forest Troll",
+        "image": "assets/cards/forest_troll.webp",
+        "type": "creature",
+        "powerCost": 2,
+        "lessonCostType": "F",
+        "damage": 2,
+        "health": 3
+    },
+    "incarcifors":
+    {
+        "name": "Incarcifors",
+        "image": "assets/cards/incarcifors.webp",
+        "type": "spell",
+        "powerCost": 6,
+        "lessonCostType": "T",
+        "effectCode": "damage_creature_or_opponent_4"
+    },
+    "take_root":
+    {
+        "name": "Take Root",
+        "image": "assets/cards/take_root.webp",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "T",
+        "effectCode": "damage_creature_or_opponent_4"
+    }
+}

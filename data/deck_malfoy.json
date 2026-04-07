@@ -1,0 +1,18 @@
+{
+    "name": "Draco Malfoy Starter Deck",
+    "description": "Base Set Starter Deck — Charms & Care of Magical Creatures. A balanced mix of cheap Charms spells for consistent damage and CoMC creatures for board presence.",
+    "startingCharacter": "draco_malfoy_starter",
+    "cards":
+    [
+        { "id": "lesson_comc",             "count": 10 },
+        { "id": "lesson_charms",           "count": 9 },
+        { "id": "accio",                   "count": 2 },
+        { "id": "boa_constrictor",         "count": 2 },
+        { "id": "curious_raven",           "count": 3 },
+        { "id": "hagrid_and_the_stranger", "count": 2 },
+        { "id": "magical_mishap",          "count": 4 },
+        { "id": "stupefy",                 "count": 2 },
+        { "id": "surly_hound",             "count": 2 },
+        { "id": "vermillious",             "count": 4 }
+    ]
+}

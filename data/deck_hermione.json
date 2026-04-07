@@ -1,0 +1,18 @@
+{
+    "name": "Hermione Granger Starter Deck",
+    "description": "Base Set Starter Deck — Transfiguration & Care of Magical Creatures. Hermione's ability to double-play Lessons lets her ramp quickly into higher-cost Transfiguration spells while creatures provide steady damage.",
+    "startingCharacter": "hermione_granger_starter",
+    "cards":
+    [
+        { "id": "lesson_comc",             "count": 12 },
+        { "id": "lesson_transfiguration",  "count": 7 },
+        { "id": "curious_raven",           "count": 4 },
+        { "id": "hagrid_and_the_stranger", "count": 2 },
+        { "id": "avifors",                 "count": 2 },
+        { "id": "vicious_wolf",            "count": 3 },
+        { "id": "epoximise",               "count": 2 },
+        { "id": "forest_troll",            "count": 3 },
+        { "id": "incarcifors",             "count": 3 },
+        { "id": "take_root",               "count": 2 }
+    ]
+}

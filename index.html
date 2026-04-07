@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harry Potter TCG - Digital Duelist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Start Screen -->
+<div class="overlay" id="start-screen">
+  <div class="overlay-box">
+    <div class="overlay-title">Harry Potter TCG</div>
+    <div class="overlay-subtitle">You are Hermione Granger.<br>Challenge Draco Malfoy to a duel!</div>
+    <button class="overlay-btn" onclick="UI.startGame()">BEGIN THE DUEL</button>
+  </div>
+</div>
+
+<!-- Game Over Screen -->
+<div class="overlay" id="gameover-screen" style="display:none">
+  <div class="overlay-box">
+    <div class="overlay-title" id="gameover-title"></div>
+    <div class="overlay-subtitle" id="gameover-subtitle"></div>
+    <div class="gameover-stats" id="gameover-stats"></div>
+    <button class="overlay-btn" onclick="UI.restartGame()">PLAY AGAIN</button>
+  </div>
+</div>
+
+<!-- Hermione Ability Prompt -->
+<div id="hermione-prompt">
+  <span>Hermione: Play a second lesson for free?</span>
+  <button class="hermione-btn" id="btn-hermione-skip" onclick="UI.hermioneSkip()">Skip</button>
+</div>
+
+<!-- Target Selection Banner -->
+<div id="target-banner">
+  <span>Choose a target for your spell</span>
+  <button class="hermione-btn" onclick="UI.cancelTargetMode()">Cancel</button>
+</div>
+
+<!-- Spell Staging (injected by JS) -->
+<div id="spell-staging-container"></div>
+
+<!-- ══════════════════════════════════════════
+     MAIN BOARD
+     ══════════════════════════════════════════ -->
+<main class="board-main">
+
+  <!-- Bot Hand (top) -->
+  <div class="bot-hand-row">
+    <div class="bot-hand-fan" id="bot-hand"></div>
+  </div>
+
+  <!-- Bot Board Half -->
+  <div class="board-half" id="bot-board-half">
+    <div class="board-zone char-zone" id="bot-character-zone">
+      <span class="zone-title">Character</span>
+      <div class="char-card bot-char" id="bot-character-card"></div>
+    </div>
+    <div class="board-zones-center">
+      <div class="board-zone" id="bot-lessons-zone">
+        <span class="zone-title">Lessons</span>
+      </div>
+      <div class="board-zone" id="bot-creatures-zone">
+        <span class="zone-title">Creatures</span>
+      </div>
+    </div>
+    <div class="edge-pile">
+      <div class="pile-card deck-card" id="bot-deck">
+        <span class="pile-badge" id="bot-deck-count">40</span>
+      </div>
+      <div class="pile-card discard-card" id="bot-discard">
+        <span class="pile-badge discard-badge" id="bot-discard-count">0</span>
+        <span class="zone-title">Discard</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center Strip -->
+  <div class="center-strip">
+    <span class="watermark">DUELING CLUB</span>
+    <div class="turn-block">
+      <div class="turn-text player-turn" id="turn-indicator">YOUR TURN</div>
+      <div class="turn-meta">
+        <span id="phase-display">Action Phase</span>
+        <div class="action-dots" id="action-dots">
+          <div class="action-dot filled"></div>
+          <div class="action-dot filled"></div>
+        </div>
+        <span class="actions-left" id="actions-left-text">2 Left</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Board Half -->
+  <div class="board-half" id="player-board-half">
+    <div class="board-zone char-zone" id="player-character-zone">
+      <span class="zone-title">Character</span>
+      <div class="char-card player-char" id="player-character-card"></div>
+    </div>
+    <div class="board-zones-center">
+      <div class="board-zone" id="player-lessons-zone">
+        <span class="zone-title">Lessons</span>
+      </div>
+      <div class="board-zone" id="player-creatures-zone">
+        <span class="zone-title">Creatures</span>
+      </div>
+    </div>
+    <div class="edge-pile">
+      <div class="pile-card deck-card player-deck-card" id="player-deck">
+        <span class="pile-badge player-badge" id="player-deck-count">40</span>
+      </div>
+      <div class="pile-card discard-card player-discard-card" id="player-discard">
+        <span class="pile-badge player-badge discard-badge" id="player-discard-count">0</span>
+        <span class="zone-title">Discard Pile</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Hand (bottom) -->
+  <div class="player-hand-row">
+    <div class="player-hand-fan" id="player-hand"></div>
+  </div>
+
+</main>
+
+<!-- ══════════════════════════════════════════
+     SIDEBAR — Bot info, Log, Player info
+     ══════════════════════════════════════════ -->
+<aside class="sidebar-left">
+
+  <!-- Bot panel -->
+  <div class="player-panel">
+    <div class="panel-header">
+      <div class="panel-avatar">&#x1F40D;</div>
+      <div style="flex:1">
+        <div class="panel-name bot">Malfoy Bot</div>
+        <div class="panel-meta">
+          <span id="bot-hand-count">Hand: 0</span>
+          <span class="power-pips" id="bot-power-pips"></span>
+        </div>
+      </div>
+    </div>
+    <div class="deck-life-section">
+      <div class="deck-life-header">
+        <span class="deck-life-label">Deck / Life</span>
+        <span class="deck-life-number" id="bot-deck-number">40</span>
+      </div>
+      <div class="deck-life-meter">
+        <div class="deck-life-fill bot-fill" id="bot-deck-bar" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Log -->
+  <div class="log-section">
+    <div class="log-header-bar">
+      <span class="log-title">Duel Log</span>
+      <span class="log-turn" id="log-turn">Turn 1</span>
+    </div>
+    <div id="game-log"></div>
+  </div>
+
+  <!-- Player panel -->
+  <div class="player-panel bottom-panel">
+    <div class="panel-header">
+      <div class="panel-avatar player-avatar">&#x1F4DA;</div>
+      <div style="flex:1">
+        <div class="panel-name player">YOU</div>
+        <div class="panel-meta">
+          <span class="power-pips" id="player-power-pips"></span>
+          <span id="player-power-total" style="margin-left:auto;color:var(--text-dim)">Power: 0</span>
+        </div>
+      </div>
+    </div>
+    <div class="deck-life-section">
+      <div class="deck-life-header">
+        <span class="deck-life-label">Deck / Life</span>
+        <span class="deck-life-number player-deck" id="player-deck-number">40</span>
+      </div>
+      <div class="deck-life-meter player-meter">
+        <div class="deck-life-fill player-fill" id="player-deck-bar" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-row">
+    <button class="ctrl-btn" id="btn-draw" disabled onclick="UI.onDrawCard()">Draw (1)</button>
+    <button class="ctrl-btn draw-btn" id="btn-end-turn" disabled onclick="UI.onEndTurn()">End Turn</button>
+  </div>
+</aside>
+
+<div id="card-hover-preview"></div>
+
+<script src="js/cards.js"></script>
+<script src="js/game.js"></script>
+<script src="js/bot.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
