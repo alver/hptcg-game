@@ -51,7 +51,7 @@
 <main class="board-main">
 
   <!-- Bot Hand (top) -->
-  <div class="bot-hand-row">
+  <div class="bot-hand-row" id="bot-hand-row">
     <div class="play-area-deck-name bot-area-name" id="bot-deck-name">BOT</div>
     <div class="bot-hand-fan" id="bot-hand"></div>
   </div>
@@ -83,17 +83,9 @@
 
   <!-- Center Strip -->
   <div class="center-strip">
-    <span class="watermark">DUELING CLUB</span>
-    <div class="turn-block">
-      <div class="turn-text player-turn" id="turn-indicator">YOUR TURN</div>
-      <div class="turn-meta">
-        <span id="phase-display">Action Phase</span>
-        <div class="action-dots" id="action-dots">
-          <div class="action-dot filled"></div>
-          <div class="action-dot filled"></div>
-        </div>
-        <span class="actions-left" id="actions-left-text">2 Left</span>
-      </div>
+    <div class="action-indicator" id="action-indicator">
+      <div class="big-action-dot" id="big-action-dot-1"></div>
+      <div class="big-action-dot" id="big-action-dot-2"></div>
     </div>
   </div>
 
@@ -123,7 +115,7 @@
   </div>
 
   <!-- Player Hand (bottom) -->
-  <div class="player-hand-row">
+  <div class="player-hand-row" id="player-hand-row">
     <div class="play-area-deck-name player-area-name" id="player-deck-name">YOU</div>
     <div class="player-hand-fan" id="player-hand"></div>
     <div class="play-area-controls">

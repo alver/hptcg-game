@@ -283,32 +283,31 @@ const UI = (() => {
   // ─── CENTER STRIP ──────────────────────────────────────────────
 
   function updateCenterStrip(state) {
-    const turnEl = document.getElementById('turn-indicator');
-    const phaseEl = document.getElementById('phase-display');
-    const dotsEl = document.getElementById('action-dots');
-    const leftEl = document.getElementById('actions-left-text');
-
     const isPlayerTurn = state.currentPlayer === state.player;
-    turnEl.textContent = isPlayerTurn ? 'YOUR TURN' : "DRACO'S TURN";
-    turnEl.className = 'turn-text ' + (isPlayerTurn ? 'player-turn' : 'bot-turn');
 
-    const phaseName = state.phase.replace(/_/g, ' ');
+    // Turn background tint on board halves + hand rows
+    const playerHalf = document.getElementById('player-board-half');
+    const botHalf = document.getElementById('bot-board-half');
+    const playerHandRow = document.getElementById('player-hand-row');
+    const botHandRow = document.getElementById('bot-hand-row');
+    playerHalf.classList.toggle('active-turn-player', isPlayerTurn);
+    playerHalf.classList.toggle('active-turn-bot', false);
+    botHalf.classList.toggle('active-turn-bot', !isPlayerTurn);
+    botHalf.classList.toggle('active-turn-player', false);
+    playerHandRow.classList.toggle('active-turn-player', isPlayerTurn);
+    botHandRow.classList.toggle('active-turn-bot', !isPlayerTurn);
 
-    if (state.phase === 'actions' && isPlayerTurn) {
-      phaseEl.textContent = 'Action Phase';
-      dotsEl.innerHTML = '';
-      for (let i = 0; i < 2; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'action-dot ' + (i < state.actionsRemaining ? 'filled' : 'spent');
-        dotsEl.appendChild(dot);
+    // Big action dots sitting on the dividing line
+    const dot1 = document.getElementById('big-action-dot-1');
+    const dot2 = document.getElementById('big-action-dot-2');
+    const dots = [dot1, dot2];
+    const showActions = state.phase === 'actions';
+    const filledClass = isPlayerTurn ? 'filled' : 'bot-filled';
+    for (let i = 0; i < 2; i++) {
+      dots[i].className = 'big-action-dot';
+      if (showActions) {
+        dots[i].classList.add(i < state.actionsRemaining ? filledClass : 'spent');
       }
-      dotsEl.style.display = 'flex';
-      leftEl.textContent = state.actionsRemaining + ' Left';
-      leftEl.style.display = '';
-    } else {
-      phaseEl.textContent = phaseName;
-      dotsEl.style.display = 'none';
-      leftEl.style.display = 'none';
     }
   }
 
