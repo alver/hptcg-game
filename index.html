@@ -52,6 +52,7 @@
 
   <!-- Bot Hand (top) -->
   <div class="bot-hand-row">
+    <div class="play-area-deck-name bot-area-name" id="bot-deck-name">BOT</div>
     <div class="bot-hand-fan" id="bot-hand"></div>
   </div>
 
@@ -74,8 +75,8 @@
         <span class="pile-badge" id="bot-deck-count">40</span>
       </div>
       <div class="pile-card discard-card" id="bot-discard">
-        <span class="pile-badge discard-badge" id="bot-discard-count">0</span>
         <span class="zone-title">Discard</span>
+        <span class="pile-badge discard-badge" id="bot-discard-count">0</span>
       </div>
     </div>
   </div>
@@ -115,15 +116,20 @@
         <span class="pile-badge player-badge" id="player-deck-count">40</span>
       </div>
       <div class="pile-card discard-card player-discard-card" id="player-discard">
+        <span class="zone-title">Discard</span>
         <span class="pile-badge player-badge discard-badge" id="player-discard-count">0</span>
-        <span class="zone-title">Discard Pile</span>
       </div>
     </div>
   </div>
 
   <!-- Player Hand (bottom) -->
   <div class="player-hand-row">
+    <div class="play-area-deck-name player-area-name" id="player-deck-name">YOU</div>
     <div class="player-hand-fan" id="player-hand"></div>
+    <div class="play-area-controls">
+      <button class="ctrl-btn" id="btn-draw" disabled onclick="UI.onDrawCard()">Draw (1)</button>
+      <button class="ctrl-btn draw-btn" id="btn-end-turn" disabled onclick="UI.onEndTurn()">End Turn</button>
+    </div>
   </div>
 
 </main>
@@ -132,29 +138,6 @@
      SIDEBAR — Bot info, Log, Player info
      ══════════════════════════════════════════ -->
 <aside class="sidebar-left">
-
-  <!-- Bot panel -->
-  <div class="player-panel">
-    <div class="panel-header">
-      <div class="panel-avatar">&#x1F40D;</div>
-      <div style="flex:1">
-        <div class="panel-name bot">Malfoy Bot</div>
-        <div class="panel-meta">
-          <span id="bot-hand-count">Hand: 0</span>
-          <span class="power-pips" id="bot-power-pips"></span>
-        </div>
-      </div>
-    </div>
-    <div class="deck-life-section">
-      <div class="deck-life-header">
-        <span class="deck-life-label">Deck / Life</span>
-        <span class="deck-life-number" id="bot-deck-number">40</span>
-      </div>
-      <div class="deck-life-meter">
-        <div class="deck-life-fill bot-fill" id="bot-deck-bar" style="width:100%"></div>
-      </div>
-    </div>
-  </div>
 
   <!-- Game Log -->
   <div class="log-section">
@@ -165,34 +148,6 @@
     <div id="game-log"></div>
   </div>
 
-  <!-- Player panel -->
-  <div class="player-panel bottom-panel">
-    <div class="panel-header">
-      <div class="panel-avatar player-avatar">&#x1F4DA;</div>
-      <div style="flex:1">
-        <div class="panel-name player">YOU</div>
-        <div class="panel-meta">
-          <span class="power-pips" id="player-power-pips"></span>
-          <span id="player-power-total" style="margin-left:auto;color:var(--text-dim)">Power: 0</span>
-        </div>
-      </div>
-    </div>
-    <div class="deck-life-section">
-      <div class="deck-life-header">
-        <span class="deck-life-label">Deck / Life</span>
-        <span class="deck-life-number player-deck" id="player-deck-number">40</span>
-      </div>
-      <div class="deck-life-meter player-meter">
-        <div class="deck-life-fill player-fill" id="player-deck-bar" style="width:100%"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Controls -->
-  <div class="controls-row">
-    <button class="ctrl-btn" id="btn-draw" disabled onclick="UI.onDrawCard()">Draw (1)</button>
-    <button class="ctrl-btn draw-btn" id="btn-end-turn" disabled onclick="UI.onEndTurn()">End Turn</button>
-  </div>
 </aside>
 
 <div id="card-hover-preview"></div>

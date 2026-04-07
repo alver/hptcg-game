@@ -33,6 +33,11 @@ const UI = (() => {
 
     // Populate character cards with images and add hover preview
     const state = GameEngine.getState();
+
+    // Set deck names in sidebar panels
+    if (state.bot.deckName) document.getElementById('bot-deck-name').textContent = state.bot.deckName;
+    if (state.player.deckName) document.getElementById('player-deck-name').textContent = state.player.deckName;
+
     if (state.player.characterCard) {
       setupCharacterCard('player-character-card', state.player.characterCard);
     }
@@ -70,7 +75,6 @@ const UI = (() => {
     }
     updateControls(state);
     updateCenterStrip(state);
-    updateSidebars(state);
   }
 
   // ─── RENDERING ─────────────────────────────────────────────────
@@ -92,25 +96,6 @@ const UI = (() => {
     const botPct = Math.max(0, (state.bot.deck.length / INITIAL_DECK_SIZE) * 100);
     const playerPct = Math.max(0, (state.player.deck.length / INITIAL_DECK_SIZE) * 100);
 
-    document.getElementById('bot-deck-bar').style.width = botPct + '%';
-
-    const playerBar = document.getElementById('player-deck-bar');
-    playerBar.style.width = playerPct + '%';
-    playerBar.className = 'deck-life-fill';
-    if (playerPct > 50) playerBar.classList.add('healthy');
-    else if (playerPct > 25) playerBar.classList.add('warning');
-    else playerBar.classList.add('player-fill');
-
-    const botNum = document.getElementById('bot-deck-number');
-    botNum.textContent = state.bot.deck.length;
-
-    const playerNum = document.getElementById('player-deck-number');
-    playerNum.textContent = state.player.deck.length;
-    playerNum.classList.remove('critical', 'warning');
-    if (state.player.deck.length <= 8) playerNum.classList.add('critical');
-    else if (state.player.deck.length <= 18) playerNum.classList.add('warning');
-
-    document.getElementById('bot-hand-count').textContent = `Hand: ${state.bot.hand.length}`;
     document.getElementById('log-turn').textContent = `Turn ${state.turnNumber}`;
   }
 
@@ -201,14 +186,32 @@ const UI = (() => {
       creaturesZone.appendChild(el);
     }
 
-    // Discard pile hover preview (top card)
+    // Discard pile — show top card face-up
     const discardEl = document.getElementById(side + '-discard');
-    const newDiscard = discardEl.cloneNode(true);
+    const newDiscard = discardEl.cloneNode(false); // don't clone children
     discardEl.parentNode.replaceChild(newDiscard, discardEl);
     if (player.discard.length > 0) {
       const topCard = player.discard[player.discard.length - 1];
+      const isHoriz = HORIZONTAL_TYPES.has(topCard.type);
+      const img = makeCardImg(topCard, 'discard-top-img' + (isHoriz ? ' horizontal' : ''));
+      newDiscard.appendChild(img);
+      const badge = document.createElement('span');
+      badge.className = 'pile-badge discard-badge';
+      badge.id = side + '-discard-count';
+      badge.textContent = player.discard.length;
+      newDiscard.appendChild(badge);
       newDiscard.addEventListener('mouseenter', () => showCardPreview(topCard));
       newDiscard.addEventListener('mouseleave', clearCardPreview);
+    } else {
+      const label = document.createElement('span');
+      label.className = 'zone-title';
+      label.textContent = 'Discard';
+      newDiscard.appendChild(label);
+      const badge = document.createElement('span');
+      badge.className = 'pile-badge discard-badge';
+      badge.id = side + '-discard-count';
+      badge.textContent = '0';
+      newDiscard.appendChild(badge);
     }
   }
 
@@ -247,19 +250,9 @@ const UI = (() => {
     return el;
   }
 
-  // ─── SIDEBAR UPDATES ───────────────────────────────────────────
-
-  function updateSidebars(state) {
-    const playerPower = CardManager.getPlayerPower(state.player);
-    const botPower = CardManager.getPlayerPower(state.bot);
-
-    renderPowerPips('player-power-pips', playerPower.byType);
-    renderPowerPips('bot-power-pips', botPower.byType);
-    document.getElementById('player-power-total').textContent = 'Power: ' + playerPower.total;
-  }
-
   function renderPowerPips(elementId, byType) {
     const el = document.getElementById(elementId);
+    if (!el) return;
     el.innerHTML = '';
     for (const [type, count] of Object.entries(byType)) {
       if (count === 0) continue;

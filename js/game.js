@@ -40,7 +40,9 @@ const GameEngine = (() => {
     ]);
 
     const player = createPlayer('Hermione', true);
+    player.deckName = hermioneData.name;
     const bot = createPlayer('Draco', false);
+    bot.deckName = dracoData.name;
 
     // Place starting characters (resolved from each deck's metadata)
     player.characterCard = CardManager.getCard(hermioneData.startingCharacter);
