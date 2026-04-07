@@ -302,21 +302,11 @@ body {
   width: 90px;
   height: 126px;
   border-radius: 4px;
-  background: linear-gradient(135deg, #1e253c 0%, #0a0e17 100%);
-  border: 2px solid var(--bot-blue);
+  background: url('../assets/cards/cardback.webp') center/cover no-repeat;
+  border: none;
   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   overflow: hidden;
-}
-.deck-back-card::after {
-  content: 'H';
-  font-family: var(--f-heading);
-  font-size: 24px;
-  opacity: 0.15;
-  color: white;
 }
 
 /* ── Board halves ── */
@@ -344,22 +334,11 @@ body {
   box-shadow: 0 10px 20px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1);
 }
 .pile-card.deck-card {
-  background: linear-gradient(135deg, #1e253c 0%, #0a0e17 100%);
-  border: 2px solid var(--bot-blue);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: url('../assets/cards/cardback.webp') center/cover no-repeat;
+  border: none;
 }
 .pile-card.deck-card.player-deck-card {
-  border-color: var(--gold);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1), 0 0 10px rgba(201,168,76,0.2);
-}
-.pile-card.deck-card::after {
-  content: 'H';
-  font-family: var(--f-heading);
-  font-size: 28px;
-  opacity: 0.2;
-  color: white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.7), 0 0 10px rgba(201,168,76,0.3);
 }
 .pile-card.discard-card {
   background: #0f1225;
