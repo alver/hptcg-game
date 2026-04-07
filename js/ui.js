@@ -202,6 +202,10 @@ const UI = (() => {
     const discardEl = document.getElementById(side + '-discard');
     const newDiscard = discardEl.cloneNode(false); // don't clone children
     discardEl.parentNode.replaceChild(newDiscard, discardEl);
+    const discardLabel = side === 'player' ? 'Your' : 'Opponent';
+    newDiscard.style.cursor = 'pointer';
+    newDiscard.addEventListener('click', () => showDiscardView(player, discardLabel));
+
     if (player.discard.length > 0) {
       const topCard = player.discard[player.discard.length - 1];
       const isHoriz = HORIZONTAL_TYPES.has(topCard.type);
@@ -335,6 +339,36 @@ const UI = (() => {
 
   function clearCardPreview() {
     document.getElementById('card-hover-preview').classList.remove('visible');
+  }
+
+  // ─── DISCARD VIEWER ────────────────────────────────────────────
+
+  function showDiscardView(player, label) {
+    const overlay = document.getElementById('discard-viewer');
+    const grid = document.getElementById('discard-viewer-grid');
+    const title = document.getElementById('discard-viewer-title');
+
+    title.textContent = `${label} — Discard Pile (${player.discard.length})`;
+    grid.innerHTML = '';
+
+    // Most recently discarded first
+    for (let i = player.discard.length - 1; i >= 0; i--) {
+      const card = player.discard[i];
+      const cardEl = document.createElement('div');
+      cardEl.className = 'discard-grid-card';
+      if (HORIZONTAL_TYPES.has(card.type)) cardEl.classList.add('horizontal');
+      cardEl.appendChild(makeCardImg(card, ''));
+      cardEl.addEventListener('mouseenter', () => showCardPreview(card));
+      cardEl.addEventListener('mouseleave', clearCardPreview);
+      grid.appendChild(cardEl);
+    }
+
+    overlay.style.display = 'flex';
+  }
+
+  function hideDiscardView() {
+    document.getElementById('discard-viewer').style.display = 'none';
+    clearCardPreview();
   }
 
   // ─── HELPERS ───────────────────────────────────────────────────
@@ -504,6 +538,37 @@ const UI = (() => {
     screen.style.display = 'flex';
   }
 
+  // ─── DISCARD VIEWER INIT (one-time) ────────────────────────────
+
+  function initDiscardViewer() {
+    const overlay = document.getElementById('discard-viewer');
+    const closeBtn = document.getElementById('discard-viewer-close');
+    const modal = overlay.querySelector('.discard-viewer-modal');
+
+    closeBtn.addEventListener('click', hideDiscardView);
+
+    // Click outside the modal closes it
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) hideDiscardView();
+    });
+
+    // Stop click inside modal from bubbling to overlay
+    modal.addEventListener('click', (e) => e.stopPropagation());
+
+    // Esc key closes
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.style.display !== 'none') {
+        hideDiscardView();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDiscardViewer);
+  } else {
+    initDiscardViewer();
+  }
+
   return {
     startGame,
     restartGame,
@@ -513,5 +578,7 @@ const UI = (() => {
     hermioneSkip,
     cancelTargetMode,
     addLogEntry,
+    showDiscardView,
+    hideDiscardView,
   };
 })();
