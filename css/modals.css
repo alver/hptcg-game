@@ -1,0 +1,105 @@
+/* ══════════════════════════════════════════════
+   DISCARD VIEWER MODAL
+   ══════════════════════════════════════════════ */
+.discard-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 20, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.discard-viewer-modal {
+  background: linear-gradient(160deg, #101530 0%, #050714 100%);
+  border: 2px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 0 60px rgba(201,168,76,0.35), 0 20px 60px rgba(0,0,0,0.7);
+  padding: 20px 24px 24px;
+  max-width: min(90vw, 1100px);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+}
+.discard-viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(201,168,76,0.3);
+}
+.discard-viewer-title {
+  font-family: var(--f-heading);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.discard-viewer-close {
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.4);
+  color: var(--gold);
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.discard-viewer-close:hover {
+  background: rgba(201,168,76,0.15);
+  border-color: var(--gold);
+}
+.discard-viewer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 84px);
+  gap: 16px;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 8px 4px;
+}
+.discard-viewer-grid:empty::after {
+  content: 'No cards in discard pile.';
+  color: var(--text-dim);
+  font-family: var(--f-mono);
+  font-size: 14px;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 24px;
+}
+.discard-grid-card {
+  width: 84px;
+  height: 118px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #1a2035;
+  border: 1px solid rgba(201,168,76,0.3);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+}
+.discard-grid-card:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.7), 0 0 12px rgba(201,168,76,0.4);
+  z-index: 5;
+}
+.discard-grid-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.discard-grid-card.horizontal img {
+  width: 140%;
+  height: 100%;
+  margin-left: -20%;
+}

@@ -1,0 +1,43 @@
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS
+   ══════════════════════════════════════════════ */
+:root {
+  --bg: #050714;
+  --panel: rgba(10,14,39,0.9);
+  --panel-dark: #070a1a;
+  --gold: #c9a84c;
+  --gold-glow: #e8a317;
+  --bot-blue: #7b8ea0;
+  --damage: #c0392b;
+  --heal: #27ae60;
+  --text: #e8e4d9;
+  --text-dim: #aeb3c0;
+  --parchment: #f4ead5;
+  --parchment-dark: #d8cba8;
+
+  /* card type borders */
+  --c-creature: #a93226;
+  --c-lesson-C: #3498db;
+  --c-lesson-P: #9b59b6;
+  --c-lesson-T: #e67e22;
+  --c-lesson-F: #5a7a3a;
+  --c-lesson-Q: #c9a84c;
+
+  --f-heading: 'Cinzel', serif;
+  --f-body: 'Libre Baskerville', serif;
+  --f-mono: 'Source Code Pro', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(20,25,60,0.4) 0%, rgba(5,7,20,1) 100%);
+  color: var(--text);
+  font-family: var(--f-body);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+}

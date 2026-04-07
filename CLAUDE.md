@@ -27,8 +27,13 @@ hptcg/
 ├── player.md              # Player interaction spec
 ├── bot.md                 # Bot AI & v1 scope
 ├── index.html             # Game entry point (HTML structure)
-├── css/
-│   └── style.css          # Game styles & theme
+├── css/                   # Split by concern; loaded in order from index.html
+│   ├── base.css           # Design tokens (:root), reset, body
+│   ├── sidebar.css        # Left sidebar: panels, deck-life meter, log, controls
+│   ├── board.css          # Main board: hands, halves, piles, thumbs, char cards, badges, lessons
+│   ├── cards.css          # Card image sizing, horizontal rotation trick, hover preview
+│   ├── overlays.css       # Game-over, Hermione prompt, target banner, spell staging
+│   └── modals.css         # Discard viewer modal
 ├── assets/
 │   └── cards/             # Card artwork PNGs (one per card)
 ├── data/

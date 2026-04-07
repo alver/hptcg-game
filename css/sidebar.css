@@ -1,0 +1,227 @@
+/* ══════════════════════════════════════════════
+   SIDEBAR — player panels, deck-life, log, controls
+   ══════════════════════════════════════════════ */
+
+.sidebar-left {
+  width: 280px;
+  height: 100%;
+  background: var(--panel-dark);
+  border-left: 1px solid rgba(201,168,76,0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  flex-shrink: 0;
+}
+
+.player-panel {
+  padding: 16px;
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+}
+.player-panel.bottom-panel {
+  border-bottom: none;
+  border-top: 1px solid rgba(201,168,76,0.2);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.panel-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--bot-blue);
+  background: #1e253c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.panel-avatar.player-avatar {
+  width: 52px;
+  height: 52px;
+  border-color: var(--gold);
+  background: #3d2510;
+  box-shadow: 0 0 15px rgba(201,168,76,0.4);
+}
+.panel-name {
+  font-family: var(--f-heading);
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.panel-name.bot { color: var(--bot-blue); }
+.panel-name.player { color: var(--gold); font-size: 16px; }
+.panel-meta {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.power-pips {
+  display: flex;
+  gap: 6px;
+}
+.power-pip {
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* ── Deck life meter ── */
+.deck-life-section { margin-top: 4px; }
+.deck-life-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4px;
+}
+.deck-life-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  color: var(--text-dim);
+  font-weight: 700;
+  font-family: var(--f-mono);
+}
+.deck-life-number {
+  font-family: var(--f-heading);
+  font-size: 20px;
+  color: var(--text);
+}
+.deck-life-number.player-deck {
+  font-size: 28px;
+  font-weight: 700;
+}
+.deck-life-number.critical {
+  color: var(--damage);
+  filter: drop-shadow(0 0 8px rgba(192,57,43,0.5));
+}
+.deck-life-number.warning { color: var(--gold-glow); }
+.deck-life-meter {
+  height: 4px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.deck-life-meter.player-meter { height: 8px; }
+.deck-life-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+  border-radius: 2px;
+}
+.deck-life-fill.bot-fill    { background: var(--bot-blue); }
+.deck-life-fill.player-fill { background: linear-gradient(90deg, var(--damage), #e74c3c); }
+.deck-life-fill.healthy     { background: var(--heal); }
+.deck-life-fill.warning     { background: var(--gold-glow); }
+
+/* ── Game log ── */
+.log-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(0,0,0,0.1);
+}
+.log-header-bar {
+  padding: 6px 14px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid rgba(201,168,76,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.log-title {
+  font-family: var(--f-heading);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.log-turn {
+  font-family: var(--f-mono);
+  font-size: 14px;
+  color: var(--text-dim);
+}
+#game-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  line-height: 1.6;
+}
+#game-log::-webkit-scrollbar { width: 4px; }
+#game-log::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+#game-log::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+.log-entry {
+  padding: 4px 0 4px 12px;
+  border-left: 2px solid rgba(255,255,255,0.1);
+  color: var(--text);
+}
+.log-entry.phase  { color: var(--gold); font-weight: 700; border-left-color: var(--gold); }
+.log-entry.system {
+  color: #ffd700;
+  font-weight: 700;
+  border-left-color: #ffd700;
+  background: rgba(255,215,0,0.05);
+  border-radius: 0 4px 4px 0;
+}
+.log-entry.damage {
+  color: #ff9090;
+  border-left-color: var(--damage);
+  background: rgba(192,57,43,0.05);
+  font-weight: 700;
+  border-radius: 0 4px 4px 0;
+  padding: 6px 4px 6px 12px;
+}
+.log-entry.draw   { color: #90c8ff; border-left-color: var(--bot-blue); }
+.log-entry.action { color: var(--text); border-left-color: rgba(255,255,255,0.2); }
+
+/* ── Controls ── */
+.play-area-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 20;
+}
+.ctrl-btn {
+  padding: 12px 24px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(123,142,160,0.4);
+  color: var(--text-dim);
+  font-family: var(--f-heading);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ctrl-btn:hover:not(:disabled) { color: white; border-color: var(--bot-blue); }
+.ctrl-btn.draw-btn {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.4);
+  color: var(--gold);
+}
+.ctrl-btn.draw-btn:hover:not(:disabled) { background: rgba(201,168,76,0.2); }
+.ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }

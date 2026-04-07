@@ -1,0 +1,80 @@
+/* ══════════════════════════════════════════════
+   CARD IMAGES — sizing, horizontal rotation, hover preview
+   ══════════════════════════════════════════════ */
+
+/* Base: portrait cards fill their container */
+.hand-card-img, .thumb-img, .lesson-stack-img, .char-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
+
+/* Landscape card containers (all share ratio W/H = 1.4) */
+.hand-card.horizontal    { width: 126px; height: 90px; }
+.card-thumb.horizontal   { width: 118px; height: 84px; }
+.lesson-stack.horizontal { width: 118px; height: 84px; }
+.char-card.horizontal    { width: 280px; height: 200px; }
+
+/* Horizontal image trick:
+   Give the img portrait CSS dims (swapped from landscape container) so object-fit:cover
+   fills it as a portrait, then translate+rotate maps it to fill the landscape slot.
+   width  = H/W * 100% = 71.43%  (= 90/126 = 60/84 = 100/140)
+   height = W/H * 100% = 140%    (= 126/90 = 84/60 = 140/100) */
+.hand-card-img.horizontal,
+.thumb-img.horizontal,
+.lesson-stack-img.horizontal,
+.char-card-img.horizontal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 71.43%;
+  height: 140%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  border-radius: 0;
+}
+
+.spell-staging-img {
+  width: 180px;
+  border-radius: 12px;
+  border: 3px solid var(--heal);
+  box-shadow: 0 0 40px rgba(39,174,96,0.4);
+  display: block;
+}
+
+/* ── Card hover preview (floating, left-center) ── */
+#card-hover-preview {
+  position: fixed;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3000;
+  pointer-events: none;
+  display: none;
+  width: 372px;
+  height: 520px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.95), 0 0 0 2px rgba(201,168,76,0.4);
+}
+#card-hover-preview.visible { display: block; }
+#card-hover-preview.horizontal {
+  width: 520px;
+  height: 372px;
+}
+#card-hover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#card-hover-preview.horizontal img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 71.43%;
+  height: 140%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  object-fit: cover;
+}
