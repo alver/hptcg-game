@@ -279,7 +279,7 @@ body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  padding: 4px 24px;
+  padding: 0;
 }
 
 /* ── Bot hand (top) ── */
@@ -307,6 +307,7 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
   position: relative;
   overflow: hidden;
+  transform: rotate(180deg);
 }
 
 /* ── Board halves ── */
@@ -644,7 +645,7 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 12px;
+  padding-bottom: 0;
   overflow-x: auto;
   position: relative;
 }
