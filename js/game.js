@@ -293,6 +293,14 @@ const GameEngine = (() => {
     return { ok: true };
   }
 
+  function discardLessonFromPlay(player, lessonType) {
+    const idx = player.lessonsInPlay.findIndex(l => l.lessonType === lessonType);
+    if (idx === -1) return null;
+    const [lesson] = player.lessonsInPlay.splice(idx, 1);
+    player.discard.push(lesson);
+    return lesson;
+  }
+
   function playerPlayCreature(card) {
     const player = state.player;
     if (!CardManager.canAfford(card, player)) return { error: 'Cannot afford this creature.' };
@@ -304,6 +312,11 @@ const GameEngine = (() => {
       turnPlayed: state.turnNumber,
     });
     state.actionsRemaining--;
+
+    if (card.discardLessonTypeOnPlay) {
+      const discarded = discardLessonFromPlay(player, card.discardLessonTypeOnPlay);
+      if (discarded) addLog(`You discard ${discarded.name} to pay for ${card.name}.`, 'action');
+    }
 
     addLog(`You play ${card.name} (${card.damage} dmg / ${card.health} hp).`, 'action');
     notify();
@@ -418,6 +431,12 @@ const GameEngine = (() => {
       turnPlayed: state.turnNumber,
     });
     state.actionsRemaining--;
+
+    if (card.discardLessonTypeOnPlay) {
+      const discarded = discardLessonFromPlay(bot, card.discardLessonTypeOnPlay);
+      if (discarded) addLog(`Draco discards ${discarded.name} to pay for ${card.name}.`, 'action');
+    }
+
     addLog(`Draco plays ${card.name} (${card.damage} dmg / ${card.health} hp).`, 'action');
     notify();
   }

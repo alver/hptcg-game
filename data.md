@@ -4,7 +4,7 @@
 
 All cards used in both decks. Keyed by string identifier (e.g. `"accio"`, `"hermione_granger_starter"`). The key is the card's canonical id and is what deck files reference.
 
-Each card carries only the fields its type actually uses. Common to all types: `name`, `image`, `type`.
+Each card carries only the fields its type actually uses. Common to all types: `name`, `image`, `type`. Exception is `text` field which is copy of text from the card, however it not used anywhere.
 
 ### Character
 ```json
@@ -12,7 +12,8 @@ Each card carries only the fields its type actually uses. Common to all types: `
   "name": "Hermione Granger",
   "image": "assets/cards/hermione_granger.png",
   "type": "character",
-  "effectCode": "hermione_double_lesson"
+  "effectCode": "hermione_double_lesson",
+  "text": "If you already have 2 or more Lessons in play, then whenever you use an Action to play a Lesson card, you may play 2 Lesson cards instead of 1."
 }
 ```
 
@@ -29,13 +30,15 @@ Each card carries only the fields its type actually uses. Common to all types: `
 
 ### Spell
 ```json
-"accio": {
-  "name": "Accio",
-  "image": "assets/cards/accio.png",
+"magical_mishap":
+{
+  "name": "Magical Mishap",
+  "image": "assets/cards/magical_mishap.webp",
   "type": "spell",
-  "powerCost": 4,
+  "powerCost": 2,
   "lessonCostType": "C",
-  "effectCode": "damage_opponent_3"
+  "effectCode": "damage_opponent_3",
+  "text": "Do 3 damage to your opponent."
 }
 ```
 - `powerCost` — total power required to play
@@ -51,7 +54,8 @@ Each card carries only the fields its type actually uses. Common to all types: `
   "powerCost": 4,
   "lessonCostType": "F",
   "damage": 2,
-  "health": 1
+  "health": 2,
+  "text": "Damage each turn: 2. Health: 2."
 }
 ```
 - `damage` — damage dealt to opponent each of your turns

@@ -4,14 +4,16 @@
         "name": "Hermione Granger",
         "image": "assets/cards/hermione_granger.webp",
         "type": "character",
-        "effectCode": "hermione_double_lesson"
+        "effectCode": "hermione_double_lesson",
+        "text": "If you already have 2 or more Lessons in play, then whenever you use an Action to play a Lesson card, you may play 2 Lesson cards instead of 1."
     },
     "draco_malfoy_starter":
     {
         "name": "Draco Malfoy",
         "image": "assets/cards/draco_malfoy.webp",
         "type": "character",
-        "effectCode": "draco_hand_disruption"
+        "effectCode": "draco_hand_disruption",
+        "text": "During your turn, you may use an Action and discard a card from your hand to look at your opponent's hand. You may then choose 1 card in his or her hand and discard it."
     },
     "lesson_comc":
     {
@@ -39,9 +41,10 @@
         "name": "Accio",
         "image": "assets/cards/accio.webp",
         "type": "spell",
-        "powerCost": 4,
+        "powerCost": 2,
         "lessonCostType": "C",
-        "effectCode": "damage_opponent_3"
+        "effectCode": "damage_opponent_3",
+        "text": "Put up to 2 Lesson cards from your discard pile into your hand."
     },
     "boa_constrictor":
     {
@@ -51,7 +54,8 @@
         "powerCost": 4,
         "lessonCostType": "F",
         "damage": 2,
-        "health": 1
+        "health": 2,
+        "text": "Damage each turn: 2. Health: 2."
     },
     "curious_raven":
     {
@@ -61,16 +65,18 @@
         "powerCost": 2,
         "lessonCostType": "F",
         "damage": 1,
-        "health": 1
+        "health": 1,
+        "text": "Damage each turn: 1. Health: 1."
     },
     "hagrid_and_the_stranger":
     {
         "name": "Hagrid and the Stranger",
         "image": "assets/cards/hagrid_and_the_stranger.webp",
         "type": "spell",
-        "powerCost": 3,
+        "powerCost": 4,
         "lessonCostType": "F",
-        "effectCode": "damage_opponent_3"
+        "effectCode": "damage_opponent_3",
+        "text": "Put a Creature card from your discard pile into your hand."
     },
     "magical_mishap":
     {
@@ -79,44 +85,49 @@
         "type": "spell",
         "powerCost": 2,
         "lessonCostType": "C",
-        "effectCode": "damage_opponent_1"
+        "effectCode": "damage_opponent_3",
+        "text": "Do 3 damage to your opponent."
     },
     "stupefy":
     {
         "name": "Stupefy",
         "image": "assets/cards/stupefy.webp",
         "type": "spell",
-        "powerCost": 5,
+        "powerCost": 6,
         "lessonCostType": "C",
-        "effectCode": "damage_opponent_4"
+        "effectCode": "damage_opponent_5",
+        "text": "Do 5 damage to your opponent."
     },
     "surly_hound":
     {
         "name": "Surly Hound",
         "image": "assets/cards/surly_hound.webp",
         "type": "creature",
-        "powerCost": 5,
+        "powerCost": 3,
         "lessonCostType": "F",
-        "damage": 2,
-        "health": 3
+        "damage": 1,
+        "health": 3,
+        "text": "Damage each turn: 1. Health: 3."
     },
     "vermillious":
     {
         "name": "Vermillious",
         "image": "assets/cards/vermillious.webp",
         "type": "spell",
-        "powerCost": 1,
+        "powerCost": 4,
         "lessonCostType": "C",
-        "effectCode": "damage_opponent_1"
+        "effectCode": "damage_opponent_1",
+        "text": "Do 3 damage to your opponent or to a Creature of your choice."
     },
     "avifors":
     {
         "name": "Avifors",
         "image": "assets/cards/avifors.webp",
         "type": "spell",
-        "powerCost": 3,
+        "powerCost": 2,
         "lessonCostType": "T",
-        "effectCode": "discard_opponent_lesson_F"
+        "effectCode": "discard_opponent_lesson_F",
+        "text": "Choose 1 of your opponent's Care of Magical Creatures Lesson in play and discard it."
     },
     "vicious_wolf":
     {
@@ -126,7 +137,8 @@
         "powerCost": 6,
         "lessonCostType": "F",
         "damage": 3,
-        "health": 3
+        "health": 3,
+        "text": "Damage each turn: 3. Health: 3."
     },
     "epoximise":
     {
@@ -135,7 +147,8 @@
         "type": "spell",
         "powerCost": 2,
         "lessonCostType": "T",
-        "effectCode": "discard_opponent_lesson_C"
+        "effectCode": "discard_opponent_lesson_C",
+        "text": "Choose 1 of your opponent's Charm Lessons in play and discard it."
     },
     "forest_troll":
     {
@@ -144,8 +157,10 @@
         "type": "creature",
         "powerCost": 2,
         "lessonCostType": "F",
+        "discardLessonTypeOnPlay": "F",
         "damage": 2,
-        "health": 3
+        "health": 3,
+        "text": "To play this card, discard 1 of your Care of Magical Creatures Lessons from play. Damage each turn: 2. Health: 3."
     },
     "incarcifors":
     {
@@ -154,7 +169,8 @@
         "type": "spell",
         "powerCost": 6,
         "lessonCostType": "T",
-        "effectCode": "damage_creature_or_opponent_4"
+        "effectCode": "damage_creature_or_opponent_4",
+        "text": "Choose 1 of your opponent's Creatures in play and discard it."
     },
     "take_root":
     {
@@ -163,6 +179,7 @@
         "type": "spell",
         "powerCost": 5,
         "lessonCostType": "T",
-        "effectCode": "damage_creature_or_opponent_4"
+        "effectCode": "damage_creature_or_opponent_4",
+        "text": "Your opponent choose 1 of his or her Creatures in play and discard it."
     }
 }
