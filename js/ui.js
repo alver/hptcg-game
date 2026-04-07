@@ -87,14 +87,26 @@ const UI = (() => {
     updatePileCounts(state);
   }
 
+  function deckHealthClass(count) {
+    const pct = count / INITIAL_DECK_SIZE;
+    if (pct < 0.20) return 'deck-danger';
+    if (pct < 0.60) return 'deck-warning';
+    return '';
+  }
+
   function updatePileCounts(state) {
-    document.getElementById('bot-deck-count').textContent = state.bot.deck.length;
-    document.getElementById('player-deck-count').textContent = state.player.deck.length;
+    const botBadge = document.getElementById('bot-deck-count');
+    botBadge.textContent = state.bot.deck.length;
+    botBadge.classList.remove('deck-warning', 'deck-danger');
+    botBadge.classList.add(...[deckHealthClass(state.bot.deck.length)].filter(Boolean));
+
+    const playerBadge = document.getElementById('player-deck-count');
+    playerBadge.textContent = state.player.deck.length;
+    playerBadge.classList.remove('deck-warning', 'deck-danger');
+    playerBadge.classList.add(...[deckHealthClass(state.player.deck.length)].filter(Boolean));
+
     document.getElementById('bot-discard-count').textContent = state.bot.discard.length;
     document.getElementById('player-discard-count').textContent = state.player.discard.length;
-
-    const botPct = Math.max(0, (state.bot.deck.length / INITIAL_DECK_SIZE) * 100);
-    const playerPct = Math.max(0, (state.player.deck.length / INITIAL_DECK_SIZE) * 100);
 
     document.getElementById('log-turn').textContent = `Turn ${state.turnNumber}`;
   }
