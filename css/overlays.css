@@ -49,6 +49,14 @@
   transition: all 0.2s;
 }
 .overlay-btn:hover { filter: brightness(1.15); box-shadow: 0 0 20px rgba(192,57,43,0.5); }
+.overlay-btn.ghost-btn {
+  margin-top: 10px;
+  background: transparent;
+  border-color: rgba(201,168,76,0.5);
+  color: var(--gold);
+  font-size: 13px;
+}
+.overlay-btn.ghost-btn:hover { box-shadow: 0 0 16px rgba(201,168,76,0.4); }
 .gameover-stats {
   font-family: var(--f-mono);
   font-size: 12px;

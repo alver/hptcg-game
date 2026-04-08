@@ -37,9 +37,13 @@ const UI = (() => {
   // ─── ENTRY POINTS ──────────────────────────────────────────────
 
   async function startGame() {
-    document.getElementById('start-screen').style.display = 'none';
     document.getElementById('game-log').innerHTML = '';
-    await GameEngine.setupGame(onStateChange);
+    const choice = JSON.parse(localStorage.getItem('hptcg-deck-choice') || 'null');
+    if (!choice || !choice.player || !choice.bot) {
+      location.replace('deck_select.html');
+      return;
+    }
+    await GameEngine.setupGame(onStateChange, choice.player, choice.bot);
 
     // Populate character cards with images and add hover preview
     const state = GameEngine.getState();
@@ -71,8 +75,13 @@ const UI = (() => {
   }
 
   function restartGame() {
-    document.getElementById('gameover-screen').style.display = 'none';
-    document.getElementById('start-screen').style.display = 'flex';
+    // Reload to fully reset state — keeps the same deck choice in localStorage
+    location.reload();
+  }
+
+  function changeDecks() {
+    localStorage.removeItem('hptcg-deck-choice');
+    location.href = 'deck_select.html';
   }
 
   // ─── STATE CHANGE CALLBACK ─────────────────────────────────────
@@ -784,16 +793,16 @@ const UI = (() => {
     if (winner === state.player) {
       title.textContent = 'VICTORY!';
       title.style.color = 'var(--gold)';
-      sub.textContent = "You defeated Draco Malfoy! Gryffindor wins!";
+      sub.textContent = `You defeated ${state.bot.name}!`;
     } else {
       title.textContent = 'DEFEAT';
       title.style.color = 'var(--damage)';
-      sub.textContent = "Draco's deck outlasted yours. Better luck next time.";
+      sub.textContent = `${state.bot.name}'s deck outlasted yours. Better luck next time.`;
     }
     stats.innerHTML = `
       <div>Turns played: ${state.turnNumber}</div>
       <div>Your deck: ${state.player.deck.length} cards remaining</div>
-      <div>Draco's deck: ${state.bot.deck.length} cards remaining</div>
+      <div>${state.bot.name}'s deck: ${state.bot.deck.length} cards remaining</div>
     `;
     screen.style.display = 'flex';
   }
@@ -827,15 +836,22 @@ const UI = (() => {
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDiscardViewer);
-  } else {
+  function bootstrap() {
     initDiscardViewer();
+    // Auto-start the game using the deck choice in localStorage. If none, startGame() redirects.
+    startGame();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrap);
+  } else {
+    bootstrap();
   }
 
   return {
     startGame,
     restartGame,
+    changeDecks,
     onStateChange,
     onDrawCard,
     onEndTurn,

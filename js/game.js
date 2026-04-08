@@ -30,35 +30,38 @@ const GameEngine = (() => {
     };
   }
 
-  async function setupGame(changeCallback) {
+  async function setupGame(changeCallback, playerDeckFile, botDeckFile) {
     onStateChange = changeCallback;
     lastNotifiedLogIndex = 0;
 
     await CardManager.loadCards();
 
-    const [hermioneData, dracoData] = await Promise.all([
-      CardManager.loadDeck('data/deck_hermione.json'),
-      CardManager.loadDeck('data/deck_malfoy.json'),
+    const [playerDeckData, botDeckData] = await Promise.all([
+      CardManager.loadDeck(playerDeckFile),
+      CardManager.loadDeck(botDeckFile),
     ]);
 
-    const player = createPlayer('Hermione', true);
-    player.deckName = hermioneData.name;
-    const bot = createPlayer('Draco', false);
-    bot.deckName = dracoData.name;
+    // Resolve starting character cards first so we can derive display names
+    const playerCharCard = CardManager.getCard(playerDeckData.startingCharacter);
+    const botCharCard = CardManager.getCard(botDeckData.startingCharacter);
 
-    // Place starting characters (resolved from each deck's metadata)
-    player.characterCard = CardManager.getCard(hermioneData.startingCharacter);
-    bot.characterCard = CardManager.getCard(dracoData.startingCharacter);
+    const player = createPlayer(playerCharCard ? playerCharCard.name : 'Player', true);
+    player.deckName = playerDeckData.name;
+    const bot = createPlayer(botCharCard ? botCharCard.name : 'Bot', false);
+    bot.deckName = botDeckData.name;
+
+    player.characterCard = playerCharCard;
+    bot.characterCard = botCharCard;
 
     // Preload all card images and cache them before the game starts
     await CardManager.preloadImages([
       player.characterCard, bot.characterCard,
-      ...hermioneData.cards, ...dracoData.cards
+      ...playerDeckData.cards, ...botDeckData.cards
     ]);
 
     // Shuffle and assign decks
-    player.deck = hermioneData.cards;
-    bot.deck = dracoData.cards;
+    player.deck = playerDeckData.cards;
+    bot.deck = botDeckData.cards;
     CardManager.shuffle(player.deck);
     CardManager.shuffle(bot.deck);
 
@@ -375,7 +378,7 @@ const GameEngine = (() => {
     if (player.deck.length === 0) {
       state.winner = state.bot;
       state.phase = PHASES.GAME_OVER;
-      addLog(`Your deck is empty — Draco wins!`, 'system');
+      addLog(`Your deck is empty — ${state.bot.name} wins!`, 'system');
       notify();
       return { ok: true };
     }
@@ -428,14 +431,14 @@ const GameEngine = (() => {
     if (state.player.deck.length === 0 && !state.winner) {
       state.winner = state.bot;
       state.phase = PHASES.GAME_OVER;
-      addLog(`Your deck is empty — Draco wins!`, 'system');
+      addLog(`Your deck is empty — ${state.bot.name} wins!`, 'system');
       notify();
       return true;
     }
     if (state.bot.deck.length === 0 && !state.winner) {
       state.winner = state.player;
       state.phase = PHASES.GAME_OVER;
-      addLog(`Draco's deck is empty — you win!`, 'system');
+      addLog(`${state.bot.name}'s deck is empty — you win!`, 'system');
       notify();
       return true;
     }
@@ -450,7 +453,7 @@ const GameEngine = (() => {
     removeFromHand(bot, card);
     bot.lessonsInPlay.push(card);
     state.actionsRemaining--;
-    addLog(`Draco plays ${card.name} (${card.lessonType} lesson).`, 'action');
+    addLog(`${bot.name} plays ${card.name} (${card.lessonType} lesson).`, 'action');
     notify();
   }
 
@@ -460,7 +463,7 @@ const GameEngine = (() => {
     bot.discard.push(card);
     state.actionsRemaining--;
     const result = CardManager.resolveEffect(card, bot, state.player, state, { type: 'opponent' });
-    addLog(`Draco casts ${card.name}.`, 'action');
+    addLog(`${bot.name} casts ${card.name}.`, 'action');
 
     if (result.needsOpponentCreatureChoice) {
       // Player (opponent) must pick one of their own creatures to discard
@@ -510,10 +513,10 @@ const GameEngine = (() => {
 
     if (card.discardLessonTypeOnPlay) {
       const discarded = discardLessonFromPlay(bot, card.discardLessonTypeOnPlay);
-      if (discarded) addLog(`Draco discards ${discarded.name} to pay for ${card.name}.`, 'action');
+      if (discarded) addLog(`${bot.name} discards ${discarded.name} to pay for ${card.name}.`, 'action');
     }
 
-    addLog(`Draco plays ${card.name} (${card.damage} dmg / ${card.health} hp).`, 'action');
+    addLog(`${bot.name} plays ${card.name} (${card.damage} dmg / ${card.health} hp).`, 'action');
     notify();
   }
 
@@ -522,14 +525,14 @@ const GameEngine = (() => {
     if (bot.deck.length === 0) {
       state.winner = state.player;
       state.phase = PHASES.GAME_OVER;
-      addLog(`Draco's deck is empty — you win!`, 'system');
+      addLog(`${bot.name}'s deck is empty — you win!`, 'system');
       notify();
       return true;
     }
     CardManager.drawCards(bot, 1);
     const card = bot.hand[bot.hand.length - 1];
     state.actionsRemaining--;
-    addLog(`Draco draws a card.`, 'draw');
+    addLog(`${bot.name} draws a card.`, 'draw');
     if (onCardDrawAnimation) onCardDrawAnimation(card, 'bot');
     notify();
     return false;

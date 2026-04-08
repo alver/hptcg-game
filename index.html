@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Harry Potter TCG - Digital Duelist</title>
+  <title>Harry Potter TCG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,17 +13,16 @@
   <link rel="stylesheet" href="css/cards.css">
   <link rel="stylesheet" href="css/overlays.css">
   <link rel="stylesheet" href="css/modals.css">
+  <script src="js/version.js"></script>
 </head>
 <body>
 
-<!-- Start Screen -->
-<div class="overlay" id="start-screen">
-  <div class="overlay-box">
-    <div class="overlay-title">Harry Potter TCG</div>
-    <div class="overlay-subtitle">You are Hermione Granger.<br>Challenge Draco Malfoy to a duel!</div>
-    <button class="overlay-btn" onclick="UI.startGame()">BEGIN THE DUEL</button>
-  </div>
-</div>
+<script>
+  // Redirect to deck selection if no deck choice has been made yet
+  if (!localStorage.getItem('hptcg-deck-choice')) {
+    location.replace('deck_select.html');
+  }
+</script>
 
 <!-- Game Over Screen -->
 <div class="overlay" id="gameover-screen" style="display:none">
@@ -32,6 +31,7 @@
     <div class="overlay-subtitle" id="gameover-subtitle"></div>
     <div class="gameover-stats" id="gameover-stats"></div>
     <button class="overlay-btn" onclick="UI.restartGame()">PLAY AGAIN</button>
+    <button class="overlay-btn ghost-btn" onclick="UI.changeDecks()">CHANGE DECKS</button>
   </div>
 </div>
 
@@ -81,12 +81,12 @@
       </div>
     </div>
     <div class="edge-pile">
-      <div class="pile-card deck-card" id="bot-deck">
-        <span class="pile-badge" id="bot-deck-count">40</span>
-      </div>
       <div class="pile-card discard-card" id="bot-discard">
         <span class="zone-title">Discard</span>
         <span class="pile-badge discard-badge" id="bot-discard-count">0</span>
+      </div>
+      <div class="pile-card deck-card" id="bot-deck">
+        <span class="pile-badge" id="bot-deck-count">40</span>
       </div>
     </div>
   </div>

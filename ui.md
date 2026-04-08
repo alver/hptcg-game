@@ -80,7 +80,7 @@ Stacked top to bottom:
 
 ## Controls
 
-- **START THE DUEL** — full-screen overlay (`.overlay`) shown before the game starts.
+- **Deck selection** — `deck_select.html` is the entry point. Player picks one deck for themselves and one for the bot from the available decks listed in `data/decks.json`. Each deck row has `👤 Me` / `🤖 Bot` toggle chips; clicking a row previews the deck (character card + grid of all unique cards with `×N` count badges) on the right. The **START DUEL** button anchored bottom-right activates only once both slots are filled, then writes the choice to `localStorage['hptcg-deck-choice']` and redirects to `index.html`. `index.html` auto-redirects back to the selector if no choice is stored.
 - **DRAW (n)** — `.ctrl-btn.draw-btn`, gold-tinted. Enabled only during the player's action phase when a draw is available.
 - **END TURN** — `.ctrl-btn`. Ends the player's turn, skipping any remaining actions.
 - **Hermione bonus lesson prompt** — floating banner (`#hermione-prompt`) that appears when Hermione's once-per-turn ability can be used.

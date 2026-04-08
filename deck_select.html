@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harry Potter TCG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/deck_select.css">
+  <script src="js/version.js"></script>
+</head>
+<body>
+
+<div class="ds-page">
+  <div class="ds-header">
+    <div class="ds-title">Harry Potter TCG</div>
+  </div>
+  <div class="ds-divider"></div>
+
+  <div class="ds-layout">
+    <!-- Left: deck list -->
+    <div class="ds-left-col">
+      <div class="ds-section-label">Select Decks</div>
+      <div class="ds-deck-list" id="ds-deck-list"></div>
+    </div>
+
+    <!-- Right: deck preview -->
+    <div class="ds-preview" id="ds-preview">
+      <div class="ds-preview-empty">Loading decks…</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom bar (status + START DUEL) -->
+<div class="ds-bottom-bar">
+  <div class="ds-status">
+    <div class="ds-status-line empty" id="ds-status-player">Your deck: <strong>—</strong></div>
+    <div class="ds-status-line bot empty" id="ds-status-bot">Bot deck: <strong>—</strong></div>
+  </div>
+  <button class="ds-start-btn" id="ds-start-btn" disabled>START DUEL</button>
+</div>
+
+<script src="js/cards.js"></script>
+<script src="js/deck_select.js"></script>
+</body>
+</html>
