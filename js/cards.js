@@ -72,6 +72,7 @@ const CardManager = (() => {
     const damageCreatureOrOpponentMatch = code.match(/^damage_creature_or_opponent_(\d+)$/);
     const damageAllCreaturesMatch = code.match(/^damage_all_creatures_(\d+)$/);
     const opponentDiscardHandMatch = code.match(/^opponent_discard_hand_(\d+)$/);
+    const returnFromDiscardMatch = code.match(/^return_from_discard_(lesson|creature|spell|any)_(\d+)$/);
 
     if (code === 'noop' || code === 'creature_standard') {
       // no effect
@@ -128,6 +129,33 @@ const CardManager = (() => {
         logs.push(`${opponent.name}'s ${lesson.name} is discarded.`);
       } else {
         logs.push(`${opponent.name} has no matching lesson in play — no effect.`);
+      }
+    } else if (returnFromDiscardMatch) {
+      const cardType = returnFromDiscardMatch[1]; // lesson | creature | spell | any
+      const maxSelect = parseInt(returnFromDiscardMatch[2]);
+      const eligibleCards = caster.discard.filter(c =>
+        cardType === 'any' ? true : c.type === cardType
+      );
+      if (caster.isHuman) {
+        // Player picks interactively — signal the UI
+        return {
+          logs: [],
+          needsCardSelection: true,
+          maxSelect,
+          eligibleCards,
+          cardTypeLabel: cardType,
+        };
+      }
+      // Bot: auto-pick up to maxSelect (most recently discarded first)
+      const toReturn = eligibleCards.slice(-maxSelect);
+      for (const c of toReturn) {
+        caster.discard.splice(caster.discard.indexOf(c), 1);
+        caster.hand.push(c);
+      }
+      if (toReturn.length > 0) {
+        logs.push(`${caster.name} returns ${toReturn.map(c => c.name).join(', ')} to hand.`);
+      } else {
+        logs.push(`${caster.name} has no matching cards in discard — no effect.`);
       }
     } else if (code === 'hermione_double_lesson' || code === 'draco_hand_disruption') {
       // Character abilities — not resolved as spells

@@ -12,6 +12,16 @@ const UI = (() => {
 
   let targetMode = false;
   let targetValidTargets = [];
+  let cardSelectionMode = false;
+  let cardSelectionChoices = [];
+
+  // Pluralized labels for card-selection prompts
+  const CARD_TYPE_LABELS = {
+    lesson: { singular: 'Lesson', plural: 'Lessons' },
+    creature: { singular: 'Creature', plural: 'Creatures' },
+    spell: { singular: 'Spell', plural: 'Spells' },
+    any: { singular: 'Card', plural: 'Cards' },
+  };
 
   // ─── IMAGE CACHE HELPER ────────────────────────────────────────
 
@@ -342,30 +352,92 @@ const UI = (() => {
 
   // ─── DISCARD VIEWER ────────────────────────────────────────────
 
-  function showDiscardView(player, label) {
+  function showDiscardView(player, label, selectionOpts = null) {
     const overlay = document.getElementById('discard-viewer');
     const grid = document.getElementById('discard-viewer-grid');
     const title = document.getElementById('discard-viewer-title');
+    const modal = overlay.querySelector('.discard-viewer-modal');
 
-    title.textContent = `${label} — Discard Pile (${player.discard.length})`;
+    const isSelectMode = !!selectionOpts;
+    const { eligibleCards = [], maxSelect = 0, cardTypeLabel = 'any' } = selectionOpts || {};
+
+    if (isSelectMode) {
+      const labels = CARD_TYPE_LABELS[cardTypeLabel] || CARD_TYPE_LABELS.any;
+      const noun = maxSelect === 1 ? labels.singular : labels.plural;
+      title.textContent = maxSelect === 1
+        ? `Choose 1 ${noun} to return to your hand`
+        : `Choose up to ${maxSelect} ${noun} to return to your hand`;
+    } else {
+      title.textContent = `${label} — Discard Pile (${player.discard.length})`;
+    }
+
+    // Remove any previous confirm/cancel bar
+    modal.querySelector('.card-pick-action-bar')?.remove();
     grid.innerHTML = '';
 
-    // Most recently discarded first
-    for (let i = player.discard.length - 1; i >= 0; i--) {
-      const card = player.discard[i];
+    // Build confirm button early so card handlers can close over it
+    let confirmBtn = null;
+    if (isSelectMode) {
+      confirmBtn = document.createElement('button');
+      confirmBtn.className = 'hermione-btn';
+      confirmBtn.style.background = 'rgba(201,168,76,0.2)';
+      confirmBtn.textContent = `Return Selected (0/${maxSelect})`;
+      confirmBtn.addEventListener('click', confirmCardSelection);
+    }
+
+    const updateConfirmLabel = () => {
+      if (confirmBtn) confirmBtn.textContent = `Return Selected (${cardSelectionChoices.length}/${maxSelect})`;
+    };
+
+    // In selection mode show only eligible cards, otherwise show full discard (recent first)
+    const cardsToShow = isSelectMode ? eligibleCards : [...player.discard].reverse();
+
+    for (const card of cardsToShow) {
       const cardEl = document.createElement('div');
       cardEl.className = 'discard-grid-card';
       if (HORIZONTAL_TYPES.has(card.type)) cardEl.classList.add('horizontal');
       cardEl.appendChild(makeCardImg(card, ''));
       cardEl.addEventListener('mouseenter', () => showCardPreview(card));
       cardEl.addEventListener('mouseleave', clearCardPreview);
+
+      if (isSelectMode) {
+        cardEl.style.cursor = 'pointer';
+        cardEl.addEventListener('click', () => {
+          const idx = cardSelectionChoices.indexOf(card);
+          if (idx !== -1) {
+            cardSelectionChoices.splice(idx, 1);
+            cardEl.classList.remove('card-pick-selected');
+          } else if (cardSelectionChoices.length < maxSelect) {
+            cardSelectionChoices.push(card);
+            cardEl.classList.add('card-pick-selected');
+          }
+          updateConfirmLabel();
+        });
+      }
+
       grid.appendChild(cardEl);
+    }
+
+    if (isSelectMode) {
+      const bar = document.createElement('div');
+      bar.className = 'card-pick-action-bar';
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'hermione-btn';
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.addEventListener('click', cancelCardSelection);
+
+      bar.appendChild(cancelBtn);
+      bar.appendChild(confirmBtn);
+      modal.appendChild(bar);
     }
 
     overlay.style.display = 'flex';
   }
 
   function hideDiscardView() {
+    const modal = document.querySelector('#discard-viewer .discard-viewer-modal');
+    modal?.querySelector('.card-pick-action-bar')?.remove();
     document.getElementById('discard-viewer').style.display = 'none';
     clearCardPreview();
   }
@@ -446,6 +518,8 @@ const UI = (() => {
     }
     if (result.needsTarget) {
       enterTargetMode(result.validTargets);
+    } else if (result.needsCardSelection) {
+      enterCardSelectionMode(result.eligibleCards, result.maxSelect, result.cardTypeLabel);
     }
   }
 
@@ -490,6 +564,34 @@ const UI = (() => {
   function cancelTargetMode() {
     if (!targetMode) return;
     exitTargetMode();
+    const state = GameEngine.getState();
+    if (state.pendingEffect) state.pendingEffect = null;
+    addLogEntry('Spell cancelled.', 'system');
+  }
+
+  function enterCardSelectionMode(eligibleCards, maxSelect, cardTypeLabel) {
+    cardSelectionMode = true;
+    cardSelectionChoices = [];
+    showDiscardView(GameEngine.getState().player, 'Your Discard', {
+      eligibleCards,
+      maxSelect,
+      cardTypeLabel,
+    });
+  }
+
+  function confirmCardSelection() {
+    cardSelectionMode = false;
+    const selected = cardSelectionChoices.slice();
+    cardSelectionChoices = [];
+    hideDiscardView();
+    const result = GameEngine.playerResolveCardSelection(selected);
+    if (result.error) addLogEntry('\u26A0 ' + result.error, 'system');
+  }
+
+  function cancelCardSelection() {
+    cardSelectionMode = false;
+    cardSelectionChoices = [];
+    hideDiscardView();
     const state = GameEngine.getState();
     if (state.pendingEffect) state.pendingEffect = null;
     addLogEntry('Spell cancelled.', 'system');
@@ -544,11 +646,15 @@ const UI = (() => {
     const closeBtn = document.getElementById('discard-viewer-close');
     const modal = overlay.querySelector('.discard-viewer-modal');
 
-    closeBtn.addEventListener('click', hideDiscardView);
+    closeBtn.addEventListener('click', () => {
+      cardSelectionMode ? cancelCardSelection() : hideDiscardView();
+    });
 
     // Click outside the modal closes it
     overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) hideDiscardView();
+      if (e.target === overlay) {
+        cardSelectionMode ? cancelCardSelection() : hideDiscardView();
+      }
     });
 
     // Stop click inside modal from bubbling to overlay
@@ -557,7 +663,7 @@ const UI = (() => {
     // Esc key closes
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && overlay.style.display !== 'none') {
-        hideDiscardView();
+        cardSelectionMode ? cancelCardSelection() : hideDiscardView();
       }
     });
   }

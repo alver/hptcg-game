@@ -273,6 +273,39 @@ const GameEngine = (() => {
       return { ok: true, needsTarget: true, validTargets: result.validTargets };
     }
 
+    if (result.needsCardSelection) {
+      // Pause and wait for card selection from UI (Accio, Hagrid, etc.)
+      state.pendingEffect = {
+        card,
+        resolveCardSelection: (selectedCards) => {
+          removeFromHand(player, card);
+          player.discard.push(card);
+          state.actionsRemaining--;
+          addLog(`You cast ${card.name}.`, 'action');
+          for (const c of selectedCards) {
+            const idx = player.discard.indexOf(c);
+            if (idx !== -1) player.discard.splice(idx, 1);
+            player.hand.push(c);
+          }
+          if (selectedCards.length > 0) {
+            addLog(`You return ${selectedCards.map(c => c.name).join(', ')} to your hand.`, 'action');
+          } else {
+            addLog('No cards returned.', 'action');
+          }
+          state.pendingEffect = null;
+          notify();
+          checkActionsExhausted();
+        }
+      };
+      return {
+        ok: true,
+        needsCardSelection: true,
+        eligibleCards: result.eligibleCards,
+        maxSelect: result.maxSelect,
+        cardTypeLabel: result.cardTypeLabel,
+      };
+    }
+
     // Immediate effect
     removeFromHand(player, card);
     player.discard.push(card);
@@ -289,6 +322,13 @@ const GameEngine = (() => {
   function playerResolveTarget(target) {
     if (!state.pendingEffect) return { error: 'No pending effect.' };
     state.pendingEffect.resolve(target);
+    if (checkGameOver()) return { ok: true };
+    return { ok: true };
+  }
+
+  function playerResolveCardSelection(selectedCards) {
+    if (!state.pendingEffect || !state.pendingEffect.resolveCardSelection) return { error: 'No pending card selection.' };
+    state.pendingEffect.resolveCardSelection(selectedCards);
     if (checkGameOver()) return { ok: true };
     return { ok: true };
   }
@@ -482,6 +522,7 @@ const GameEngine = (() => {
     playerPlayCard,
     playerHermioneBonusLesson,
     playerResolveTarget,
+    playerResolveCardSelection,
     playerDrawCard,
     playerEndTurn,
     // Bot-facing methods

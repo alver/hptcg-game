@@ -43,7 +43,7 @@
         "type": "spell",
         "powerCost": 2,
         "lessonCostType": "C",
-        "effectCode": "damage_opponent_3",
+        "effectCode": "return_from_discard_lesson_2",
         "text": "Put up to 2 Lesson cards from your discard pile into your hand."
     },
     "boa_constrictor":
@@ -75,7 +75,7 @@
         "type": "spell",
         "powerCost": 4,
         "lessonCostType": "F",
-        "effectCode": "damage_opponent_3",
+        "effectCode": "return_from_discard_creature_1",
         "text": "Put a Creature card from your discard pile into your hand."
     },
     "magical_mishap":
@@ -116,7 +116,7 @@
         "type": "spell",
         "powerCost": 4,
         "lessonCostType": "C",
-        "effectCode": "damage_opponent_1",
+        "effectCode": "damage_creature_or_opponent_3",
         "text": "Do 3 damage to your opponent or to a Creature of your choice."
     },
     "avifors":

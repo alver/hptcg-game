@@ -91,6 +91,7 @@ Each spell or character `effectCode` maps to a handler in `cards.js` `resolveEff
 | `draw_X` | Caster draws X cards |
 | `opponent_discard_hand_X` | Opponent discards X cards from hand |
 | `discard_opponent_lesson_T` | Discard one of opponent's lessons of the given type (suffix is the lesson type letter: `C`, `T`, `F`, `P`, `Q`) |
+| `return_from_discard_TYPE_N` | Return up to N cards of TYPE (`lesson`, `creature`, `spell`, `any`) from caster's discard pile to hand. Player picks interactively via the discard viewer; bot auto-picks the most recent matching cards. Used by Accio (`return_from_discard_lesson_2`), Hagrid and the Stranger (`return_from_discard_creature_1`). |
 | `hermione_double_lesson` | Hermione's character ability — handled by `game.js` action flow, not as a spell effect |
 | `draco_hand_disruption` | Draco's character ability — placeholder, not yet wired |
 | `noop` | No automated effect / placeholder |
