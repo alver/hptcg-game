@@ -509,6 +509,7 @@ const UI = (() => {
     if (!state.waitingForInput || state.actionsRemaining <= 0) return;
     if (state.hermioneAbilityPending) return;
 
+    clearCardPreview();
     if (card.type === 'spell') showSpellStaging(card);
 
     const result = GameEngine.playerPlayCard(card);
