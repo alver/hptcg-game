@@ -1,6 +1,9 @@
-// bot.js — Bot AI for Draco
+// bot.js — Bot AI
 
 const BotAI = (() => {
+
+  /** Power threshold above which the bot stops prioritizing lesson plays. */
+  const MAX_LESSON_PRIORITY_POWER = 6;
 
   // Main entry: execute bot's full turn (auto-phases already done by game.js startTurn)
   async function executeBotTurn(gameState) {
@@ -36,10 +39,14 @@ const BotAI = (() => {
 
   function decideAction(bot, player, gameState) {
     const hand = bot.hand;
+    const power = CardManager.getPlayerPower(bot);
 
-    // Priority 1: Play a lesson (prioritize F, then C)
+    // Priority 1: Play a lesson — but only when the bot still needs more power.
+    // Once the bot reaches MAX_LESSON_PRIORITY_POWER total lessons, lessons drop
+    // below spells/creatures in priority so the bot doesn't waste actions ramping
+    // when it could be casting.
     const lessons = hand.filter(c => c.type === 'lesson');
-    if (lessons.length > 0) {
+    if (lessons.length > 0 && power.total < MAX_LESSON_PRIORITY_POWER) {
       // Sort: F first, then C, then others
       const sorted = lessons.slice().sort((a, b) => {
         const order = { F: 0, C: 1, T: 2, P: 3, Q: 4 };
@@ -68,6 +75,15 @@ const BotAI = (() => {
       .sort((a, b) => (b.powerCost || 0) - (a.powerCost || 0));
     if (creatures.length > 0) {
       return { type: 'play_creature', card: creatures[0] };
+    }
+
+    // Priority 4: Play a lesson even at high power (better than drawing if available)
+    if (lessons.length > 0) {
+      const sorted = lessons.slice().sort((a, b) => {
+        const order = { F: 0, C: 1, T: 2, P: 3, Q: 4 };
+        return (order[a.lessonType] ?? 5) - (order[b.lessonType] ?? 5);
+      });
+      return { type: 'play_lesson', card: sorted[0] };
     }
 
     // Fallback: draw a card

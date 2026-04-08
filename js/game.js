@@ -27,6 +27,7 @@ const GameEngine = (() => {
       discard: [],
       lessonsInPlay: [],
       creaturesInPlay: [], // [{card, damageCounters, turnPlayed}]
+      initialDeckSize: 0,
     };
   }
 
@@ -65,6 +66,10 @@ const GameEngine = (() => {
     CardManager.shuffle(player.deck);
     CardManager.shuffle(bot.deck);
 
+    // Store initial deck sizes for health-bar calculations
+    player.initialDeckSize = player.deck.length;
+    bot.initialDeckSize = bot.deck.length;
+
     // Draw 7 starting cards
     CardManager.drawCards(player, 7);
     CardManager.drawCards(bot, 7);
@@ -102,6 +107,48 @@ const GameEngine = (() => {
     const newLogs = state.log.slice(lastNotifiedLogIndex);
     lastNotifiedLogIndex = state.log.length;
     onStateChange({ ...state }, newLogs);
+  }
+
+  // ─── HELPERS ─────────────────────────────────────────────────────
+
+  function removeFromHand(player, card) {
+    const idx = player.hand.indexOf(card);
+    if (idx !== -1) player.hand.splice(idx, 1);
+  }
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /** Formatted subject for log messages: "You" for human, name for bot. */
+  function who(player) {
+    return player.isHuman ? 'You' : player.name;
+  }
+
+  /** Formatted verb: "You play" vs "Bot plays". */
+  function whoVerb(player, verb) {
+    return player.isHuman ? `You ${verb}` : `${player.name} ${verb}s`;
+  }
+
+  // ─── GAME-OVER CHECK (single source of truth) ──────────────────
+
+  function checkGameOver() {
+    if (state.winner) return true;
+    if (state.player.deck.length === 0) {
+      state.winner = state.bot;
+      state.phase = PHASES.GAME_OVER;
+      addLog(`Your deck is empty — ${state.bot.name} wins!`, 'system');
+      notify();
+      return true;
+    }
+    if (state.bot.deck.length === 0) {
+      state.winner = state.player;
+      state.phase = PHASES.GAME_OVER;
+      addLog(`${state.bot.name}'s deck is empty — you win!`, 'system');
+      notify();
+      return true;
+    }
+    return false;
   }
 
   // ─── TURN FLOW ────────────────────────────────────────────────────
@@ -149,14 +196,13 @@ const GameEngine = (() => {
   }
 
   async function phaseDraw(player) {
-    if (player.deck.length === 0) {
-      state.winner = player === state.player ? state.bot : state.player;
-      state.phase = PHASES.GAME_OVER;
-      addLog(`${player.name}'s deck is empty — ${state.winner.name} wins!`, 'system');
-      notify();
+    if (checkGameOver()) return;
+    const drawn = CardManager.drawCards(player, 1);
+    if (drawn === 0) {
+      // drawCards returned 0 because deck was empty; checkGameOver will catch it
+      checkGameOver();
       return;
     }
-    const drawn = CardManager.drawCards(player, 1);
     const card = player.hand[player.hand.length - 1];
     addLog(player.isHuman ? `You draw ${card.name}.` : `${player.name} draws a card.`, 'draw');
     if (onCardDrawAnimation) onCardDrawAnimation(card, player === state.player ? 'player' : 'bot');
@@ -181,7 +227,69 @@ const GameEngine = (() => {
     }
   }
 
-  // ─── PLAYER ACTION METHODS ────────────────────────────────────────
+  // ─── UNIFIED ACTION METHODS ────────────────────────────────────
+
+  function discardLessonFromPlay(player, lessonType) {
+    const idx = player.lessonsInPlay.findIndex(l => l.lessonType === lessonType);
+    if (idx === -1) return null;
+    const [lesson] = player.lessonsInPlay.splice(idx, 1);
+    player.discard.push(lesson);
+    return lesson;
+  }
+
+  /**
+   * Play a lesson card for any player. Returns { lessonsBefore }.
+   * Caller must handle Hermione ability check and actions-exhausted check.
+   */
+  function playLesson(player, card) {
+    const lessonsBefore = player.lessonsInPlay.length;
+    removeFromHand(player, card);
+    player.lessonsInPlay.push(card);
+    state.actionsRemaining--;
+    addLog(`${whoVerb(player, 'play')} ${card.name} (${card.lessonType} lesson).`, 'action');
+    return { lessonsBefore };
+  }
+
+  /**
+   * Play a creature card for any player.
+   */
+  function playCreature(player, card) {
+    removeFromHand(player, card);
+    player.creaturesInPlay.push({
+      card,
+      damageCounters: 0,
+      turnPlayed: state.turnNumber,
+    });
+    state.actionsRemaining--;
+
+    if (card.discardLessonTypeOnPlay) {
+      const discarded = discardLessonFromPlay(player, card.discardLessonTypeOnPlay);
+      if (discarded) addLog(`${who(player)} discard${player.isHuman ? '' : 's'} ${discarded.name} to pay for ${card.name}.`, 'action');
+    }
+
+    addLog(`${whoVerb(player, 'play')} ${card.name} (${card.damage} dmg / ${card.health} hp).`, 'action');
+  }
+
+  /**
+   * Draw a card for any player. Returns true if game over.
+   */
+  function drawCard(player) {
+    if (checkGameOver()) return true;
+    CardManager.drawCards(player, 1);
+    if (player.deck.length === 0 && player.hand.length === 0) {
+      // Edge case: tried to draw from empty deck
+      return checkGameOver();
+    }
+    const card = player.hand[player.hand.length - 1];
+    state.actionsRemaining--;
+    const side = player === state.player ? 'player' : 'bot';
+    addLog(player.isHuman ? `You draw ${card.name}.` : `${player.name} draws a card.`, 'draw');
+    if (onCardDrawAnimation) onCardDrawAnimation(card, side);
+    notify();
+    return false;
+  }
+
+  // ─── PLAYER-FACING METHODS (called by UI) ──────────────────────
 
   function getPlayableCards(player) {
     return player.hand.filter(card => {
@@ -199,8 +307,6 @@ const GameEngine = (() => {
     if (!state.waitingForInput) return { error: 'Not your turn.' };
     if (state.actionsRemaining <= 0) return { error: 'No actions remaining.' };
 
-    const player = state.player;
-
     if (card.type === 'lesson') {
       return playerPlayLesson(card);
     } else if (card.type === 'spell') {
@@ -212,19 +318,13 @@ const GameEngine = (() => {
   }
 
   function playerPlayLesson(card) {
-    const player = state.player;
-    // Check BEFORE placing — ability requires already having 2+ lessons in play
-    const lessonsBefore = player.lessonsInPlay.length;
+    const { lessonsBefore } = playLesson(state.player, card);
 
-    removeFromHand(player, card);
-    player.lessonsInPlay.push(card);
-    state.actionsRemaining--;
-
-    addLog(`You play ${card.name} (${card.lessonType} lesson).`, 'action');
-
-    // Hermione ability: you must have had 2+ lessons before playing this one
-    if (lessonsBefore >= 2) {
-      const extraLessons = player.hand.filter(c => c.type === 'lesson');
+    // Hermione ability: only if this player's character has the ability,
+    // and they had 2+ lessons before playing this one
+    const hasHermioneAbility = state.player.characterCard?.effectCode === 'hermione_double_lesson';
+    if (hasHermioneAbility && lessonsBefore >= 2) {
+      const extraLessons = state.player.hand.filter(c => c.type === 'lesson');
       if (extraLessons.length > 0) {
         state.hermioneAbilityPending = true;
         notify();
@@ -261,6 +361,8 @@ const GameEngine = (() => {
 
     if (result.needsTarget) {
       // Pause and wait for target selection from UI
+      // Note: card is NOT removed from hand yet — only consumed when target is chosen.
+      // If the player cancels, the card stays in hand and no action is spent.
       state.pendingEffect = {
         card,
         resolve: (target) => {
@@ -281,6 +383,7 @@ const GameEngine = (() => {
 
     if (result.needsCardSelection) {
       // Pause and wait for card selection from UI (Accio, Hagrid, etc.)
+      // Note: card is NOT removed from hand yet — only consumed when selection is confirmed.
       state.pendingEffect = {
         card,
         resolveCardSelection: (selectedCards) => {
@@ -339,32 +442,9 @@ const GameEngine = (() => {
     return { ok: true };
   }
 
-  function discardLessonFromPlay(player, lessonType) {
-    const idx = player.lessonsInPlay.findIndex(l => l.lessonType === lessonType);
-    if (idx === -1) return null;
-    const [lesson] = player.lessonsInPlay.splice(idx, 1);
-    player.discard.push(lesson);
-    return lesson;
-  }
-
   function playerPlayCreature(card) {
-    const player = state.player;
-    if (!CardManager.canAfford(card, player)) return { error: 'Cannot afford this creature.' };
-
-    removeFromHand(player, card);
-    player.creaturesInPlay.push({
-      card,
-      damageCounters: 0,
-      turnPlayed: state.turnNumber,
-    });
-    state.actionsRemaining--;
-
-    if (card.discardLessonTypeOnPlay) {
-      const discarded = discardLessonFromPlay(player, card.discardLessonTypeOnPlay);
-      if (discarded) addLog(`You discard ${discarded.name} to pay for ${card.name}.`, 'action');
-    }
-
-    addLog(`You play ${card.name} (${card.damage} dmg / ${card.health} hp).`, 'action');
+    if (!CardManager.canAfford(card, state.player)) return { error: 'Cannot afford this creature.' };
+    playCreature(state.player, card);
     notify();
     checkActionsExhausted();
     return { ok: true };
@@ -373,22 +453,8 @@ const GameEngine = (() => {
   function playerDrawCard() {
     if (!state.waitingForInput) return { error: 'Not your turn.' };
     if (state.actionsRemaining <= 0) return { error: 'No actions remaining.' };
-
-    const player = state.player;
-    if (player.deck.length === 0) {
-      state.winner = state.bot;
-      state.phase = PHASES.GAME_OVER;
-      addLog(`Your deck is empty — ${state.bot.name} wins!`, 'system');
-      notify();
-      return { ok: true };
-    }
-
-    CardManager.drawCards(player, 1);
-    const card = player.hand[player.hand.length - 1];
-    state.actionsRemaining--;
-    addLog(`You draw ${card.name}.`, 'draw');
-    if (onCardDrawAnimation) onCardDrawAnimation(card, 'player');
-    notify();
+    const gameOver = drawCard(state.player);
+    if (gameOver) return { ok: true };
     checkActionsExhausted();
     return { ok: true };
   }
@@ -425,35 +491,11 @@ const GameEngine = (() => {
     setTimeout(() => startTurn(), 600);
   }
 
-  function checkGameOver() {
-    if (state.winner) return true;
-    // If a deck was wiped to 0 by a damage spell mid-turn, the player with 0 cards loses
-    if (state.player.deck.length === 0 && !state.winner) {
-      state.winner = state.bot;
-      state.phase = PHASES.GAME_OVER;
-      addLog(`Your deck is empty — ${state.bot.name} wins!`, 'system');
-      notify();
-      return true;
-    }
-    if (state.bot.deck.length === 0 && !state.winner) {
-      state.winner = state.player;
-      state.phase = PHASES.GAME_OVER;
-      addLog(`${state.bot.name}'s deck is empty — you win!`, 'system');
-      notify();
-      return true;
-    }
-    return false;
-  }
-
-  // ─── BOT ACTION METHODS (called by bot.js) ────────────────────────
+  // ─── BOT-FACING METHODS (called by bot.js) ────────────────────
 
   async function botPlayLesson(card) {
     if (onCardPlayAnimation) await onCardPlayAnimation(card, 'bot', 'lesson');
-    const bot = state.bot;
-    removeFromHand(bot, card);
-    bot.lessonsInPlay.push(card);
-    state.actionsRemaining--;
-    addLog(`${bot.name} plays ${card.name} (${card.lessonType} lesson).`, 'action');
+    playLesson(state.bot, card);
     notify();
   }
 
@@ -502,52 +544,15 @@ const GameEngine = (() => {
 
   async function botPlayCreature(card) {
     if (onCardPlayAnimation) await onCardPlayAnimation(card, 'bot', 'creature');
-    const bot = state.bot;
-    removeFromHand(bot, card);
-    bot.creaturesInPlay.push({
-      card,
-      damageCounters: 0,
-      turnPlayed: state.turnNumber,
-    });
-    state.actionsRemaining--;
-
-    if (card.discardLessonTypeOnPlay) {
-      const discarded = discardLessonFromPlay(bot, card.discardLessonTypeOnPlay);
-      if (discarded) addLog(`${bot.name} discards ${discarded.name} to pay for ${card.name}.`, 'action');
-    }
-
-    addLog(`${bot.name} plays ${card.name} (${card.damage} dmg / ${card.health} hp).`, 'action');
+    playCreature(state.bot, card);
     notify();
   }
 
   function botDrawCard() {
-    const bot = state.bot;
-    if (bot.deck.length === 0) {
-      state.winner = state.player;
-      state.phase = PHASES.GAME_OVER;
-      addLog(`${bot.name}'s deck is empty — you win!`, 'system');
-      notify();
-      return true;
-    }
-    CardManager.drawCards(bot, 1);
-    const card = bot.hand[bot.hand.length - 1];
-    state.actionsRemaining--;
-    addLog(`${bot.name} draws a card.`, 'draw');
-    if (onCardDrawAnimation) onCardDrawAnimation(card, 'bot');
-    notify();
-    return false;
+    return drawCard(state.bot);
   }
 
-  // ─── HELPERS ─────────────────────────────────────────────────────
-
-  function removeFromHand(player, card) {
-    const idx = player.hand.indexOf(card);
-    if (idx !== -1) player.hand.splice(idx, 1);
-  }
-
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  // ─── PUBLIC API ─────────────────────────────────────────────────
 
   function getState() {
     return state;
@@ -574,7 +579,7 @@ const GameEngine = (() => {
     proceedToEndTurn,
     addLog,
     notify,
-    delay: (ms) => new Promise(r => setTimeout(r, ms)),
+    delay,
     setCardPlayAnimation: (fn) => { onCardPlayAnimation = fn; },
     setCardDrawAnimation: (fn) => { onCardDrawAnimation = fn; },
   };

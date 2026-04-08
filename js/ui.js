@@ -8,8 +8,6 @@ const UI = (() => {
   const LESSON_NAMES = { F: 'CoMC', C: 'Charms', T: 'Transf.', P: 'Potions', Q: 'Quidditch' };
   const LESSON_ICONS = { F: '\uD83E\uDD8E', C: '\u2728', T: '\uD83D\uDD04', P: '\uD83E\uDDEA', Q: '\uD83C\uDFC6' };
   const LESSON_ICON_FILES = { F: 'cofc', C: 'charms', T: 'transfiguration', P: 'potions', Q: 'quidditch' };
-  const INITIAL_DECK_SIZE = 40;
-  const HORIZONTAL_TYPES = new Set(['lesson', 'creature', 'character']);
 
   let targetMode = false;
   let targetValidTargets = [];
@@ -24,7 +22,7 @@ const UI = (() => {
     any: { singular: 'Card', plural: 'Cards' },
   };
 
-  // ─── IMAGE CACHE HELPER ────────────────────────────────────────
+  // ─── IMAGE HELPER ──────────────────────────────────────────────
 
   function makeCardImg(card, className) {
     const img = document.createElement('img');
@@ -35,11 +33,60 @@ const UI = (() => {
     return img;
   }
 
+  // ─── FLYING-CARD FACTORY ──────────────────────────────────────
+
+  /**
+   * Creates a flying-card element positioned at `sourceRect`, appends it to
+   * document.body, forces reflow, then returns it ready for CSS transition.
+   *
+   * @param {object} opts
+   * @param {object|null} opts.card     Card data (null for face-down cards)
+   * @param {boolean}     opts.faceDown Show card back instead of image
+   * @param {boolean}     opts.isHoriz  Landscape orientation
+   * @param {number}      opts.w        Width in px
+   * @param {number}      opts.h        Height in px
+   * @param {DOMRect}     opts.from     Source bounding rect
+   * @returns {HTMLElement} The positioned flying-card element
+   */
+  function createFlyingCard({ card = null, faceDown = false, isHoriz = false, w, h, from }) {
+    const el = document.createElement('div');
+    el.className = 'flying-card' + (isHoriz ? ' horizontal' : '');
+    el.style.width = w + 'px';
+    el.style.height = h + 'px';
+    el.style.left = from.left + 'px';
+    el.style.top = from.top + 'px';
+
+    if (faceDown) {
+      const inner = document.createElement('div');
+      inner.className = 'flying-card-back-inner';
+      el.appendChild(inner);
+    } else if (card) {
+      el.appendChild(makeCardImg(card, isHoriz ? 'horizontal' : ''));
+    }
+
+    document.body.appendChild(el);
+    el.getBoundingClientRect(); // force reflow so initial position is applied
+    return el;
+  }
+
+  /**
+   * Transition a flying-card element to `destRect`, then remove it after duration.
+   */
+  function flyTo(el, destRect, sourceRect, w, h, duration = 450) {
+    if (destRect) {
+      const dx = destRect.left + (destRect.width - w) / 2 - sourceRect.left;
+      const dy = destRect.top + (destRect.height - h) / 2 - sourceRect.top;
+      el.style.transform = `translate(${dx}px, ${dy}px) scale(0.8)`;
+    }
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), duration + 50);
+  }
+
   // ─── ENTRY POINTS ──────────────────────────────────────────────
 
   async function startGame() {
     document.getElementById('game-log').innerHTML = '';
-    const choice = JSON.parse(localStorage.getItem('hptcg-deck-choice') || 'null');
+    const choice = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
     if (!choice || !choice.player || !choice.bot) {
       location.replace('deck_select.html');
       return;
@@ -81,7 +128,7 @@ const UI = (() => {
   }
 
   function changeDecks() {
-    localStorage.removeItem('hptcg-deck-choice');
+    localStorage.removeItem(STORAGE_KEY);
     location.href = 'deck_select.html';
   }
 
@@ -110,8 +157,8 @@ const UI = (() => {
     updatePileCounts(state);
   }
 
-  function deckHealthClass(count) {
-    const pct = count / INITIAL_DECK_SIZE;
+  function deckHealthClass(count, initialSize) {
+    const pct = count / initialSize;
     if (pct < 0.20) return 'deck-danger';
     if (pct < 0.60) return 'deck-warning';
     return '';
@@ -121,12 +168,14 @@ const UI = (() => {
     const botBadge = document.getElementById('bot-deck-count');
     botBadge.textContent = state.bot.deck.length;
     botBadge.classList.remove('deck-warning', 'deck-danger');
-    botBadge.classList.add(...[deckHealthClass(state.bot.deck.length)].filter(Boolean));
+    const botCls = deckHealthClass(state.bot.deck.length, state.bot.initialDeckSize);
+    if (botCls) botBadge.classList.add(botCls);
 
     const playerBadge = document.getElementById('player-deck-count');
     playerBadge.textContent = state.player.deck.length;
     playerBadge.classList.remove('deck-warning', 'deck-danger');
-    playerBadge.classList.add(...[deckHealthClass(state.player.deck.length)].filter(Boolean));
+    const playerCls = deckHealthClass(state.player.deck.length, state.player.initialDeckSize);
+    if (playerCls) playerBadge.classList.add(playerCls);
 
     document.getElementById('bot-discard-count').textContent = state.bot.discard.length;
     document.getElementById('player-discard-count').textContent = state.player.discard.length;
@@ -169,13 +218,14 @@ const UI = (() => {
   }
 
   function createHandCard(card, playable) {
+    const isHoriz = CardManager.isHorizontal(card);
     const el = document.createElement('div');
     el.className = 'hand-card';
-    if (HORIZONTAL_TYPES.has(card.type)) el.classList.add('horizontal');
+    if (isHoriz) el.classList.add('horizontal');
     if (playable) el.classList.add('playable');
     else if (card.type !== 'lesson') el.classList.add('unaffordable');
 
-    el.appendChild(makeCardImg(card, 'hand-card-img' + (HORIZONTAL_TYPES.has(card.type) ? ' horizontal' : '')));
+    el.appendChild(makeCardImg(card, 'hand-card-img' + (isHoriz ? ' horizontal' : '')));
 
     return el;
   }
@@ -226,36 +276,51 @@ const UI = (() => {
       creaturesZone.appendChild(el);
     }
 
-    // Discard pile — show top card face-up
+    // Discard pile — update in-place instead of clone/replace
+    renderDiscardPile(player, side, state);
+  }
+
+  /**
+   * Update the discard pile element in-place.
+   * Uses a data attribute to track the current event-handler generation
+   * so we don't accumulate listeners on each render.
+   */
+  function renderDiscardPile(player, side, state) {
     const discardEl = document.getElementById(side + '-discard');
-    const newDiscard = discardEl.cloneNode(false); // don't clone children
-    discardEl.parentNode.replaceChild(newDiscard, discardEl);
     const discardLabel = side === 'player' ? 'Your' : 'Opponent';
-    newDiscard.style.cursor = 'pointer';
-    newDiscard.addEventListener('click', () => showDiscardView(player, discardLabel));
+
+    // Clear previous content and listeners via AbortController
+    if (discardEl._abortCtrl) discardEl._abortCtrl.abort();
+    const ctrl = new AbortController();
+    discardEl._abortCtrl = ctrl;
+    const sig = { signal: ctrl.signal };
+
+    discardEl.innerHTML = '';
+    discardEl.style.cursor = 'pointer';
+    discardEl.addEventListener('click', () => showDiscardView(player, discardLabel), sig);
 
     if (player.discard.length > 0) {
       const topCard = player.discard[player.discard.length - 1];
-      const isHoriz = HORIZONTAL_TYPES.has(topCard.type);
+      const isHoriz = CardManager.isHorizontal(topCard);
       const img = makeCardImg(topCard, 'discard-top-img' + (isHoriz ? ' horizontal' : ''));
-      newDiscard.appendChild(img);
+      discardEl.appendChild(img);
       const badge = document.createElement('span');
       badge.className = 'pile-badge discard-badge';
       badge.id = side + '-discard-count';
       badge.textContent = player.discard.length;
-      newDiscard.appendChild(badge);
-      newDiscard.addEventListener('mouseenter', () => showCardPreview(topCard));
-      newDiscard.addEventListener('mouseleave', clearCardPreview);
+      discardEl.appendChild(badge);
+      discardEl.addEventListener('mouseenter', () => showCardPreview(topCard), sig);
+      discardEl.addEventListener('mouseleave', clearCardPreview, sig);
     } else {
       const label = document.createElement('span');
       label.className = 'zone-title';
       label.textContent = 'Discard';
-      newDiscard.appendChild(label);
+      discardEl.appendChild(label);
       const badge = document.createElement('span');
       badge.className = 'pile-badge discard-badge';
       badge.id = side + '-discard-count';
       badge.textContent = '0';
-      newDiscard.appendChild(badge);
+      discardEl.appendChild(badge);
     }
   }
 
@@ -365,7 +430,7 @@ const UI = (() => {
   function showCardPreview(card) {
     if (!card) return;
     const el = document.getElementById('card-hover-preview');
-    el.classList.toggle('horizontal', HORIZONTAL_TYPES.has(card.type));
+    el.classList.toggle('horizontal', CardManager.isHorizontal(card));
     el.innerHTML = '';
     el.appendChild(makeCardImg(card, ''));
     el.classList.add('visible');
@@ -420,7 +485,7 @@ const UI = (() => {
     for (const card of cardsToShow) {
       const cardEl = document.createElement('div');
       cardEl.className = 'discard-grid-card';
-      if (HORIZONTAL_TYPES.has(card.type)) cardEl.classList.add('horizontal');
+      if (CardManager.isHorizontal(card)) cardEl.classList.add('horizontal');
       cardEl.appendChild(makeCardImg(card, ''));
       cardEl.addEventListener('mouseenter', () => showCardPreview(card));
       cardEl.addEventListener('mouseleave', clearCardPreview);
@@ -530,45 +595,19 @@ const UI = (() => {
 
   function animateCardPlay(card, sourceEl, targetZoneId, isBot) {
     return new Promise(resolve => {
-      const isHoriz = HORIZONTAL_TYPES.has(card.type);
+      const isHoriz = CardManager.isHorizontal(card);
       const W = isHoriz ? 126 : 90;
       const H = isHoriz ? 90 : 126;
-
       const sourceRect = sourceEl.getBoundingClientRect();
       const targetEl = document.getElementById(targetZoneId);
+      const destRect = targetEl ? targetEl.getBoundingClientRect() : null;
 
-      const flyEl = document.createElement('div');
-      flyEl.className = 'flying-card' + (isHoriz ? ' horizontal' : '');
-      flyEl.style.width = W + 'px';
-      flyEl.style.height = H + 'px';
-      flyEl.style.left = sourceRect.left + 'px';
-      flyEl.style.top = sourceRect.top + 'px';
+      const flyEl = createFlyingCard({
+        card, faceDown: isBot, isHoriz, w: W, h: H, from: sourceRect,
+      });
 
-      if (isBot) {
-        const inner = document.createElement('div');
-        inner.className = 'flying-card-back-inner';
-        flyEl.appendChild(inner);
-      } else {
-        flyEl.appendChild(makeCardImg(card, isHoriz ? 'horizontal' : ''));
-      }
-
-      document.body.appendChild(flyEl);
-
-      // Force reflow so initial position is applied before transition starts
-      flyEl.getBoundingClientRect();
-
-      const DURATION = 450;
-      if (targetEl) {
-        const targetRect = targetEl.getBoundingClientRect();
-        const dx = targetRect.left + (targetRect.width - W) / 2 - sourceRect.left;
-        const dy = targetRect.top + (targetRect.height - H) / 2 - sourceRect.top;
-        flyEl.style.transform = `translate(${dx}px, ${dy}px) scale(0.8)`;
-        flyEl.style.opacity = '0';
-      } else {
-        flyEl.style.opacity = '0';
-      }
-
-      setTimeout(() => { flyEl.remove(); resolve(); }, DURATION + 50);
+      flyTo(flyEl, destRect, sourceRect, W, H);
+      setTimeout(resolve, 500);
     });
   }
 
@@ -582,31 +621,20 @@ const UI = (() => {
     const sourceRect = deckEl.getBoundingClientRect();
     const destRect = discardEl.getBoundingClientRect();
     const W = 84, H = 118; // matches .pile-card dimensions
-    const DURATION = 450;
     const STAGGER = 70;
 
     for (let i = 0; i < count; i++) {
       setTimeout(() => {
-        const flyEl = document.createElement('div');
-        flyEl.className = 'flying-card';
-        flyEl.style.width = W + 'px';
-        flyEl.style.height = H + 'px';
-        flyEl.style.left = (sourceRect.left + (sourceRect.width - W) / 2) + 'px';
-        flyEl.style.top = (sourceRect.top + (sourceRect.height - H) / 2) + 'px';
+        const centeredFrom = {
+          left: sourceRect.left + (sourceRect.width - W) / 2,
+          top: sourceRect.top + (sourceRect.height - H) / 2,
+        };
 
-        const inner = document.createElement('div');
-        inner.className = 'flying-card-back-inner';
-        flyEl.appendChild(inner);
+        const flyEl = createFlyingCard({
+          faceDown: true, w: W, h: H, from: centeredFrom,
+        });
 
-        document.body.appendChild(flyEl);
-        flyEl.getBoundingClientRect(); // force reflow
-
-        const dx = destRect.left + (destRect.width - W) / 2 - (sourceRect.left + (sourceRect.width - W) / 2);
-        const dy = destRect.top + (destRect.height - H) / 2 - (sourceRect.top + (sourceRect.height - H) / 2);
-        flyEl.style.transform = `translate(${dx}px, ${dy}px) scale(0.8)`;
-        flyEl.style.opacity = '0';
-
-        setTimeout(() => flyEl.remove(), DURATION + 50);
+        flyTo(flyEl, destRect, centeredFrom, W, H);
       }, i * STAGGER);
     }
   }
@@ -620,35 +648,20 @@ const UI = (() => {
     const sourceRect = deckEl.getBoundingClientRect();
     const destRect = handEl.getBoundingClientRect();
 
-    const isHoriz = isPlayer && HORIZONTAL_TYPES.has(card.type);
+    const isHoriz = isPlayer && CardManager.isHorizontal(card);
     const W = isHoriz ? 126 : 90;
     const H = isHoriz ? 90 : 126;
 
-    const flyEl = document.createElement('div');
-    flyEl.className = 'flying-card' + (isHoriz ? ' horizontal' : '');
-    flyEl.style.width = W + 'px';
-    flyEl.style.height = H + 'px';
-    flyEl.style.left = (sourceRect.left + (sourceRect.width - W) / 2) + 'px';
-    flyEl.style.top = (sourceRect.top + (sourceRect.height - H) / 2) + 'px';
+    const centeredFrom = {
+      left: sourceRect.left + (sourceRect.width - W) / 2,
+      top: sourceRect.top + (sourceRect.height - H) / 2,
+    };
 
-    if (!isPlayer) {
-      const inner = document.createElement('div');
-      inner.className = 'flying-card-back-inner';
-      flyEl.appendChild(inner);
-    } else {
-      flyEl.appendChild(makeCardImg(card, isHoriz ? 'horizontal' : ''));
-    }
+    const flyEl = createFlyingCard({
+      card, faceDown: !isPlayer, isHoriz, w: W, h: H, from: centeredFrom,
+    });
 
-    document.body.appendChild(flyEl);
-    flyEl.getBoundingClientRect(); // force reflow
-
-    const DURATION = 450;
-    const dx = destRect.left + (destRect.width - W) / 2 - (sourceRect.left + (sourceRect.width - W) / 2);
-    const dy = destRect.top + (destRect.height - H) / 2 - (sourceRect.top + (sourceRect.height - H) / 2);
-    flyEl.style.transform = `translate(${dx}px, ${dy}px) scale(0.8)`;
-    flyEl.style.opacity = '0';
-
-    setTimeout(() => flyEl.remove(), DURATION + 50);
+    flyTo(flyEl, destRect, centeredFrom, W, H);
   }
 
   function animateBotCardPlay(card, side, type) {

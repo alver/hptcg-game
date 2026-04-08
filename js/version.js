@@ -1,16 +1,16 @@
-// version.js — Game version and localStorage compatibility check
+// version.js — Game version, shared constants, and localStorage compatibility check
 // Bump GAME_VERSION whenever saved data format changes to force a clean reset.
 
 const GAME_VERSION = 1;
+const STORAGE_KEY = 'hptcg-deck-choice';
 
 (function () {
-  const KEY = 'hptcg-deck-choice';
   try {
-    const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
     if (saved && (saved.version || 0) < GAME_VERSION) {
-      localStorage.removeItem(KEY);
+      localStorage.removeItem(STORAGE_KEY);
     }
   } catch (_) {
-    localStorage.removeItem(KEY);
+    localStorage.removeItem(STORAGE_KEY);
   }
 })();

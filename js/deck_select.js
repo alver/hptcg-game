@@ -1,19 +1,19 @@
 // deck_select.js — Deck selection screen controller
 
 (async () => {
-  const STORAGE_KEY = 'hptcg-deck-choice';
-
   // Load card database (so getCard() works for previews)
   await CardManager.loadCards();
 
   // Load deck manifest
   const manifestRes = await fetch('data/decks.json');
+  if (!manifestRes.ok) throw new Error(`Failed to load deck manifest: ${manifestRes.status}`);
   const manifest = await manifestRes.json();
 
   // Fetch each deck JSON unexpanded to keep the {id, count} list intact
   const decks = await Promise.all(
     manifest.decks.map(async (file) => {
       const res = await fetch(file);
+      if (!res.ok) throw new Error(`Failed to load deck ${file}: ${res.status}`);
       const data = await res.json();
       return { file, data };
     })
@@ -31,17 +31,21 @@
   const playerStatus = document.getElementById('ds-status-player');
   const botStatus = document.getElementById('ds-status-bot');
 
-  // ── Spotlight (card hover preview) ──────────────────────────
+  // ── Spotlight (card hover preview — singleton) ──────────────
+
+  let spotlightPane = null;
   let spotlightInner = null;
 
   function buildSpotlight() {
-    const pane = document.createElement('div');
-    pane.className = 'ds-card-spotlight';
+    if (spotlightPane) return spotlightPane;
+
+    spotlightPane = document.createElement('div');
+    spotlightPane.className = 'ds-card-spotlight';
 
     const title = document.createElement('div');
     title.className = 'ds-section-label';
     title.textContent = 'Card Preview';
-    pane.appendChild(title);
+    spotlightPane.appendChild(title);
 
     const wrap = document.createElement('div');
     wrap.className = 'ds-spotlight-card-wrap';
@@ -50,14 +54,14 @@
     spotlightInner.className = 'ds-card-spotlight-inner hidden horizontal';
     spotlightInner.innerHTML = '<img draggable="false" />';
     wrap.appendChild(spotlightInner);
-    pane.appendChild(wrap);
+    spotlightPane.appendChild(wrap);
 
-    return pane;
+    return spotlightPane;
   }
 
   function showSpotlight(card) {
     if (!spotlightInner) return;
-    const isHoriz = card.type === 'lesson' || card.type === 'creature' || card.type === 'character';
+    const isHoriz = CardManager.isHorizontal(card);
     spotlightInner.className = 'ds-card-spotlight-inner ' + (isHoriz ? 'horizontal' : 'portrait');
     spotlightInner.querySelector('img').src = card.image;
     spotlightInner.querySelector('img').alt = card.name;
@@ -70,7 +74,7 @@
 
   // ── Card element builder ────────────────────────────────────
   function makeCardEl(card, count) {
-    const isHorizontal = card.type === 'lesson' || card.type === 'creature' || card.type === 'character';
+    const isHorizontal = CardManager.isHorizontal(card);
     const cardEl = document.createElement('div');
     cardEl.className = 'ds-card' + (isHorizontal ? '' : ' portrait');
 
@@ -159,7 +163,7 @@
     main.className = 'ds-preview-main';
     previewEl.appendChild(main);
 
-    // Right 40%: card spotlight
+    // Right 40%: card spotlight (reuse singleton)
     previewEl.appendChild(buildSpotlight());
 
     const scroll = document.createElement('div');

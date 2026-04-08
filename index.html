@@ -19,7 +19,7 @@
 
 <script>
   // Redirect to deck selection if no deck choice has been made yet
-  if (!localStorage.getItem('hptcg-deck-choice')) {
+  if (!localStorage.getItem(STORAGE_KEY)) {
     location.replace('deck_select.html');
   }
 </script>
