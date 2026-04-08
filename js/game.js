@@ -14,6 +14,8 @@ const GameEngine = (() => {
   let state = null;
   let onStateChange = null; // callback(state, logEntries)
   let lastNotifiedLogIndex = 0;
+  let onCardPlayAnimation = null; // async (card, side, type) hook for UI animations
+  let onCardDrawAnimation = null; // (card, side) hook for draw animations (fire-and-forget)
 
   function createPlayer(name, isHuman) {
     return {
@@ -154,6 +156,7 @@ const GameEngine = (() => {
     const drawn = CardManager.drawCards(player, 1);
     const card = player.hand[player.hand.length - 1];
     addLog(player.isHuman ? `You draw ${card.name}.` : `${player.name} draws a card.`, 'draw');
+    if (onCardDrawAnimation) onCardDrawAnimation(card, player === state.player ? 'player' : 'bot');
     notify();
   }
 
@@ -381,6 +384,7 @@ const GameEngine = (() => {
     const card = player.hand[player.hand.length - 1];
     state.actionsRemaining--;
     addLog(`You draw ${card.name}.`, 'draw');
+    if (onCardDrawAnimation) onCardDrawAnimation(card, 'player');
     notify();
     checkActionsExhausted();
     return { ok: true };
@@ -440,7 +444,8 @@ const GameEngine = (() => {
 
   // ─── BOT ACTION METHODS (called by bot.js) ────────────────────────
 
-  function botPlayLesson(card) {
+  async function botPlayLesson(card) {
+    if (onCardPlayAnimation) await onCardPlayAnimation(card, 'bot', 'lesson');
     const bot = state.bot;
     removeFromHand(bot, card);
     bot.lessonsInPlay.push(card);
@@ -449,20 +454,51 @@ const GameEngine = (() => {
     notify();
   }
 
-  function botPlaySpell(card) {
+  async function botPlaySpell(card) {
     const bot = state.bot;
     removeFromHand(bot, card);
     bot.discard.push(card);
     state.actionsRemaining--;
-    // Bot always targets opponent
     const result = CardManager.resolveEffect(card, bot, state.player, state, { type: 'opponent' });
     addLog(`Draco casts ${card.name}.`, 'action');
+
+    if (result.needsOpponentCreatureChoice) {
+      // Player (opponent) must pick one of their own creatures to discard
+      return new Promise(resolve => {
+        state.pendingOpponentCreatureChoice = {
+          resolve: (creature) => {
+            if (creature) {
+              const idx = state.player.creaturesInPlay.indexOf(creature);
+              if (idx !== -1) {
+                state.player.creaturesInPlay.splice(idx, 1);
+                state.player.discard.push(creature.card);
+                addLog(`You discard ${creature.card.name}.`, 'damage');
+              }
+            }
+            state.pendingOpponentCreatureChoice = null;
+            state.waitingForInput = false;
+            notify();
+            resolve(checkGameOver());
+          }
+        };
+        state.waitingForInput = true;
+        notify();
+      });
+    }
+
     for (const l of result.logs) addLog(l, 'damage');
     notify();
     return checkGameOver();
   }
 
-  function botPlayCreature(card) {
+  function playerResolveTakeRoot(creature) {
+    if (!state.pendingOpponentCreatureChoice) return { error: 'No pending creature choice.' };
+    state.pendingOpponentCreatureChoice.resolve(creature);
+    return { ok: true };
+  }
+
+  async function botPlayCreature(card) {
+    if (onCardPlayAnimation) await onCardPlayAnimation(card, 'bot', 'creature');
     const bot = state.bot;
     removeFromHand(bot, card);
     bot.creaturesInPlay.push({
@@ -494,6 +530,7 @@ const GameEngine = (() => {
     const card = bot.hand[bot.hand.length - 1];
     state.actionsRemaining--;
     addLog(`Draco draws a card.`, 'draw');
+    if (onCardDrawAnimation) onCardDrawAnimation(card, 'bot');
     notify();
     return false;
   }
@@ -523,6 +560,7 @@ const GameEngine = (() => {
     playerHermioneBonusLesson,
     playerResolveTarget,
     playerResolveCardSelection,
+    playerResolveTakeRoot,
     playerDrawCard,
     playerEndTurn,
     // Bot-facing methods
@@ -534,5 +572,7 @@ const GameEngine = (() => {
     addLog,
     notify,
     delay: (ms) => new Promise(r => setTimeout(r, ms)),
+    setCardPlayAnimation: (fn) => { onCardPlayAnimation = fn; },
+    setCardDrawAnimation: (fn) => { onCardDrawAnimation = fn; },
   };
 })();

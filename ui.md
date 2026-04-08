@@ -114,17 +114,16 @@ Lesson type color coding (border / theme):
 - **Highlighted cards** — `.highlighted`, stronger gold glow (used for bonus-lesson prompts).
 - **Clicking a card** — selects it for play; a second click or a target click confirms.
 - **Hover preview** — `#card-hover-preview`, a large floating card (372×520 portrait, 520×372 landscape) pinned to the left edge of the screen while hovering any small card (hand, thumb, lesson stack, discard grid).
-- **Playing a lesson** — card moves from hand into its lesson stack; stack count increments.
+- **Playing a lesson or creature** — a `.flying-card` clone of the hand card (same dimensions and horizontal image trick) is created at the card's exact screen position, then CSS-transitioned to the center of the target zone (`.player-lessons-zone` / `.player-creatures-zone`) over ~450 ms while scaling to 0.8 and fading out. The state re-renders underneath; the animation overlays it.
 - **Playing a spell** — card flies to the center as a `.spell-spotlight` with the `spell-appear` keyframe (scale/blur/fade), then to the discard pile.
-- **Playing a creature** — card moves from hand into the creatures zone.
-- **Drawing a card** — card animates from the deck to the hand.
+- **Drawing a card** — a `.flying-card` is created centered on the deck pile and transitions to the center of the hand fan over ~450 ms, scaling to 0.8 and fading out as it arrives (identical easing and timing to the card-play animation). For the player, the flying card shows the actual card face; for the bot, it shows a `.flying-card-back-inner` (the card-back image).
 
 ### Bot turn
 - Bot actions play out with ~500 ms delays so the viewer can follow.
-- Bot's hand cards and deck card are already rotated 180°; played cards return to the correct orientation as they move into play.
+- When the bot plays a lesson or creature, a `.flying-card` showing the card back (`.flying-card-back-inner`) animates from a hand card to the target zone before the state updates — so the hand still shows the full count during flight. When the bot draws, a face-down flying card travels from the bot deck up to the bot hand fan.
 
 ### Shared animations
-- **Deck mill (damage)** — cards fly from deck to discard; the duel log gets a red `.damage` entry.
+- **Deck mill (damage)** — for each card milled, a face-down `.flying-card` (84×118, matching the pile-card size) flies from the deck pile to the discard pile with a 70 ms stagger between cards. The hook fires inside `CardManager.dealDamageToPlayer` so it triggers for both creature damage and spell damage uniformly.
 - **Creature taking damage** — the damage counter badge appears or increments on the creature.
 - **Creature destroyed** — creature card animates to the discard pile.
 - **Target-available pulse** — valid targets get a red `pulse-red` animation on their border.

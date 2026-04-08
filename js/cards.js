@@ -2,6 +2,7 @@
 
 const CardManager = (() => {
   let cardDb = {};
+  let onMillAnimation = null;
 
   // Warm the browser's HTTP cache so card images are ready before first render.
   // In production, serve assets/cards/* with a long-lived Cache-Control header
@@ -157,6 +158,58 @@ const CardManager = (() => {
       } else {
         logs.push(`${caster.name} has no matching cards in discard — no effect.`);
       }
+    } else if (code === 'discard_opponent_creature') {
+      // Caster picks one of opponent's creatures to discard immediately (no damage counters)
+      if (caster.isHuman && target === null) {
+        if (opponent.creaturesInPlay.length === 0) {
+          logs.push('No opponent creatures in play — no effect.');
+          return { logs };
+        }
+        return { logs: [], needsTarget: true, validTargets: opponent.creaturesInPlay.map(c => ({ type: 'creature', creature: c })) };
+      }
+      let chosen = null;
+      if (target && target.type === 'creature') {
+        chosen = target.creature;
+      } else if (!caster.isHuman) {
+        // Bot auto-picks highest-damage player creature
+        chosen = opponent.creaturesInPlay.reduce(
+          (best, c) => !best || (c.card.damage || 0) >= (best.card.damage || 0) ? c : best, null
+        );
+      }
+      if (chosen) {
+        const idx = opponent.creaturesInPlay.indexOf(chosen);
+        if (idx !== -1) {
+          opponent.creaturesInPlay.splice(idx, 1);
+          opponent.discard.push(chosen.card);
+          logs.push(`${chosen.card.name} is discarded from play.`);
+        }
+      } else {
+        logs.push('No opponent creatures to discard — no effect.');
+      }
+    } else if (code === 'opponent_chooses_discard_creature') {
+      // Opponent (not the caster) picks one of their own creatures to discard
+      if (!caster.isHuman) {
+        // Bot casting: player must interactively choose — signal the engine
+        if (opponent.creaturesInPlay.length === 0) {
+          logs.push('No creatures to discard — no effect.');
+          return { logs };
+        }
+        return { logs: [], needsOpponentCreatureChoice: true };
+      }
+      // Player casting: bot (opponent) auto-discards its weakest creature
+      const chosen = opponent.creaturesInPlay.reduce(
+        (weakest, c) => !weakest || (c.card.damage || 0) <= (weakest.card.damage || 0) ? c : weakest, null
+      );
+      if (chosen) {
+        const idx = opponent.creaturesInPlay.indexOf(chosen);
+        if (idx !== -1) {
+          opponent.creaturesInPlay.splice(idx, 1);
+          opponent.discard.push(chosen.card);
+          logs.push(`${chosen.card.name} is discarded from play.`);
+        }
+      } else {
+        logs.push('No opponent creatures to discard — no effect.');
+      }
     } else if (code === 'hermione_double_lesson' || code === 'draco_hand_disruption') {
       // Character abilities — not resolved as spells
     } else {
@@ -177,6 +230,7 @@ const CardManager = (() => {
   // Move up to `amount` cards from player deck to discard, return actual count moved
   function dealDamageToPlayer(player, amount) {
     const actual = Math.min(amount, player.deck.length);
+    if (onMillAnimation && actual > 0) onMillAnimation(player, actual);
     for (let i = 0; i < actual; i++) {
       player.discard.push(player.deck.shift());
     }
@@ -236,5 +290,6 @@ const CardManager = (() => {
     dealDamageToCreature,
     drawCards,
     shuffle,
+    setMillAnimation: (fn) => { onMillAnimation = fn; },
   };
 })();

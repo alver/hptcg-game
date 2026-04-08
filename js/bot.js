@@ -17,12 +17,12 @@ const BotAI = (() => {
       const decision = decideAction(bot, player, gameState);
 
       if (decision.type === 'play_lesson') {
-        GameEngine.botPlayLesson(decision.card);
+        await GameEngine.botPlayLesson(decision.card);
       } else if (decision.type === 'play_spell') {
-        const gameOver = GameEngine.botPlaySpell(decision.card);
+        const gameOver = await GameEngine.botPlaySpell(decision.card);
         if (gameOver) return;
       } else if (decision.type === 'play_creature') {
-        GameEngine.botPlayCreature(decision.card);
+        await GameEngine.botPlayCreature(decision.card);
       } else if (decision.type === 'draw_card') {
         const gameOver = GameEngine.botDrawCard();
         if (gameOver) return;
@@ -48,9 +48,15 @@ const BotAI = (() => {
       return { type: 'play_lesson', card: sorted[0] };
     }
 
-    // Priority 2: Most expensive affordable spell
+    // Priority 2: Most expensive affordable spell (skip creature-targeting spells if player has none)
     const spells = hand
       .filter(c => c.type === 'spell' && CardManager.canAfford(c, bot))
+      .filter(c => {
+        if (c.effectCode === 'discard_opponent_creature' || c.effectCode === 'opponent_chooses_discard_creature') {
+          return player.creaturesInPlay.length > 0;
+        }
+        return true;
+      })
       .sort((a, b) => (b.powerCost || 0) - (a.powerCost || 0));
     if (spells.length > 0) {
       return { type: 'play_spell', card: spells[0] };

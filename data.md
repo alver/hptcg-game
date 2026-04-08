@@ -92,6 +92,8 @@ Each spell or character `effectCode` maps to a handler in `cards.js` `resolveEff
 | `opponent_discard_hand_X` | Opponent discards X cards from hand |
 | `discard_opponent_lesson_T` | Discard one of opponent's lessons of the given type (suffix is the lesson type letter: `C`, `T`, `F`, `P`, `Q`) |
 | `return_from_discard_TYPE_N` | Return up to N cards of TYPE (`lesson`, `creature`, `spell`, `any`) from caster's discard pile to hand. Player picks interactively via the discard viewer; bot auto-picks the most recent matching cards. Used by Accio (`return_from_discard_lesson_2`), Hagrid and the Stranger (`return_from_discard_creature_1`). |
+| `discard_opponent_creature` | Caster (player) picks one of opponent's creatures to discard immediately — no damage counters; bot auto-picks highest-damage player creature. Used by Incarcifors. |
+| `opponent_chooses_discard_creature` | The opponent (not the caster) discards one of their own creatures. Player casting → bot auto-picks its weakest creature; bot casting → player is prompted via `#take-root-banner` to click one of their own creatures (bot turn pauses via `pendingOpponentCreatureChoice` state until resolved). Used by Take Root. |
 | `hermione_double_lesson` | Hermione's character ability — handled by `game.js` action flow, not as a spell effect |
 | `draco_hand_disruption` | Draco's character ability — placeholder, not yet wired |
 | `noop` | No automated effect / placeholder |

@@ -55,6 +55,9 @@ const UI = (() => {
       setupCharacterCard('bot-character-card', state.bot.characterCard);
     }
 
+    GameEngine.setCardPlayAnimation(animateBotCardPlay);
+    GameEngine.setCardDrawAnimation(animateCardDraw);
+    CardManager.setMillAnimation(animateMillCards);
     await GameEngine.startTurn();
   }
 
@@ -146,7 +149,7 @@ const UI = (() => {
       const el = createHandCard(card, playable);
 
       if (playable) {
-        el.addEventListener('click', () => onCardClick(card));
+        el.addEventListener('click', () => onCardClick(card, el));
       }
       el.addEventListener('mouseenter', () => showCardPreview(card));
       el.addEventListener('mouseleave', clearCardPreview);
@@ -204,6 +207,11 @@ const UI = (() => {
           el.classList.add('target-available');
           el.addEventListener('click', () => onTargetClick(validCreature));
         }
+      }
+      if (state.pendingOpponentCreatureChoice && !isBot) {
+        el.classList.add('target-available');
+        el.style.cursor = 'crosshair';
+        el.addEventListener('click', () => onOwnCreatureClick(c));
       }
       creaturesZone.appendChild(el);
     }
@@ -323,8 +331,10 @@ const UI = (() => {
 
   function updateControls(state) {
     const isPlayerTurn = state.waitingForInput;
-    document.getElementById('btn-draw').disabled = !isPlayerTurn || state.actionsRemaining <= 0;
-    document.getElementById('btn-end-turn').disabled = !isPlayerTurn;
+    const takeRootPending = !!state.pendingOpponentCreatureChoice;
+    document.getElementById('take-root-banner').classList.toggle('visible', takeRootPending);
+    document.getElementById('btn-draw').disabled = !isPlayerTurn || takeRootPending || state.actionsRemaining <= 0;
+    document.getElementById('btn-end-turn').disabled = !isPlayerTurn || takeRootPending;
 
     const prompt = document.getElementById('hermione-prompt');
     if (state.hermioneAbilityPending && isPlayerTurn) {
@@ -447,6 +457,7 @@ const UI = (() => {
   function isCardPlayable(card, state) {
     if (!state.waitingForInput || state.actionsRemaining <= 0) return false;
     if (state.hermioneAbilityPending) return false;
+    if (state.pendingOpponentCreatureChoice) return false;
     if (card.type === 'lesson') return true;
     if (card.type === 'spell' || card.type === 'creature') {
       return CardManager.canAfford(card, state.player);
@@ -500,16 +511,157 @@ const UI = (() => {
     logEl.scrollTop = logEl.scrollHeight;
   }
 
+  // ─── CARD PLAY ANIMATION ───────────────────────────────────────
+
+  function animateCardPlay(card, sourceEl, targetZoneId, isBot) {
+    return new Promise(resolve => {
+      const isHoriz = HORIZONTAL_TYPES.has(card.type);
+      const W = isHoriz ? 126 : 90;
+      const H = isHoriz ? 90 : 126;
+
+      const sourceRect = sourceEl.getBoundingClientRect();
+      const targetEl = document.getElementById(targetZoneId);
+
+      const flyEl = document.createElement('div');
+      flyEl.className = 'flying-card' + (isHoriz ? ' horizontal' : '');
+      flyEl.style.width = W + 'px';
+      flyEl.style.height = H + 'px';
+      flyEl.style.left = sourceRect.left + 'px';
+      flyEl.style.top = sourceRect.top + 'px';
+
+      if (isBot) {
+        const inner = document.createElement('div');
+        inner.className = 'flying-card-back-inner';
+        flyEl.appendChild(inner);
+      } else {
+        flyEl.appendChild(makeCardImg(card, isHoriz ? 'horizontal' : ''));
+      }
+
+      document.body.appendChild(flyEl);
+
+      // Force reflow so initial position is applied before transition starts
+      flyEl.getBoundingClientRect();
+
+      const DURATION = 450;
+      if (targetEl) {
+        const targetRect = targetEl.getBoundingClientRect();
+        const dx = targetRect.left + (targetRect.width - W) / 2 - sourceRect.left;
+        const dy = targetRect.top + (targetRect.height - H) / 2 - sourceRect.top;
+        flyEl.style.transform = `translate(${dx}px, ${dy}px) scale(0.8)`;
+        flyEl.style.opacity = '0';
+      } else {
+        flyEl.style.opacity = '0';
+      }
+
+      setTimeout(() => { flyEl.remove(); resolve(); }, DURATION + 50);
+    });
+  }
+
+  function animateMillCards(player, count) {
+    const state = GameEngine.getState();
+    const isPlayer = player === state.player;
+    const deckEl = document.getElementById(isPlayer ? 'player-deck' : 'bot-deck');
+    const discardEl = document.getElementById(isPlayer ? 'player-discard' : 'bot-discard');
+    if (!deckEl || !discardEl) return;
+
+    const sourceRect = deckEl.getBoundingClientRect();
+    const destRect = discardEl.getBoundingClientRect();
+    const W = 84, H = 118; // matches .pile-card dimensions
+    const DURATION = 450;
+    const STAGGER = 70;
+
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const flyEl = document.createElement('div');
+        flyEl.className = 'flying-card';
+        flyEl.style.width = W + 'px';
+        flyEl.style.height = H + 'px';
+        flyEl.style.left = (sourceRect.left + (sourceRect.width - W) / 2) + 'px';
+        flyEl.style.top = (sourceRect.top + (sourceRect.height - H) / 2) + 'px';
+
+        const inner = document.createElement('div');
+        inner.className = 'flying-card-back-inner';
+        flyEl.appendChild(inner);
+
+        document.body.appendChild(flyEl);
+        flyEl.getBoundingClientRect(); // force reflow
+
+        const dx = destRect.left + (destRect.width - W) / 2 - (sourceRect.left + (sourceRect.width - W) / 2);
+        const dy = destRect.top + (destRect.height - H) / 2 - (sourceRect.top + (sourceRect.height - H) / 2);
+        flyEl.style.transform = `translate(${dx}px, ${dy}px) scale(0.8)`;
+        flyEl.style.opacity = '0';
+
+        setTimeout(() => flyEl.remove(), DURATION + 50);
+      }, i * STAGGER);
+    }
+  }
+
+  function animateCardDraw(card, side) {
+    const isPlayer = side === 'player';
+    const deckEl = document.getElementById(isPlayer ? 'player-deck' : 'bot-deck');
+    const handEl = document.getElementById(isPlayer ? 'player-hand' : 'bot-hand');
+    if (!deckEl || !handEl) return;
+
+    const sourceRect = deckEl.getBoundingClientRect();
+    const destRect = handEl.getBoundingClientRect();
+
+    const isHoriz = isPlayer && HORIZONTAL_TYPES.has(card.type);
+    const W = isHoriz ? 126 : 90;
+    const H = isHoriz ? 90 : 126;
+
+    const flyEl = document.createElement('div');
+    flyEl.className = 'flying-card' + (isHoriz ? ' horizontal' : '');
+    flyEl.style.width = W + 'px';
+    flyEl.style.height = H + 'px';
+    flyEl.style.left = (sourceRect.left + (sourceRect.width - W) / 2) + 'px';
+    flyEl.style.top = (sourceRect.top + (sourceRect.height - H) / 2) + 'px';
+
+    if (!isPlayer) {
+      const inner = document.createElement('div');
+      inner.className = 'flying-card-back-inner';
+      flyEl.appendChild(inner);
+    } else {
+      flyEl.appendChild(makeCardImg(card, isHoriz ? 'horizontal' : ''));
+    }
+
+    document.body.appendChild(flyEl);
+    flyEl.getBoundingClientRect(); // force reflow
+
+    const DURATION = 450;
+    const dx = destRect.left + (destRect.width - W) / 2 - (sourceRect.left + (sourceRect.width - W) / 2);
+    const dy = destRect.top + (destRect.height - H) / 2 - (sourceRect.top + (sourceRect.height - H) / 2);
+    flyEl.style.transform = `translate(${dx}px, ${dy}px) scale(0.8)`;
+    flyEl.style.opacity = '0';
+
+    setTimeout(() => flyEl.remove(), DURATION + 50);
+  }
+
+  function animateBotCardPlay(card, side, type) {
+    const botHandEl = document.getElementById('bot-hand');
+    const sourceEl = botHandEl?.querySelector('.deck-back-card');
+    const targetZoneId = type === 'lesson' ? 'bot-lessons-zone' : 'bot-creatures-zone';
+    if (!sourceEl) return Promise.resolve();
+    return animateCardPlay(card, sourceEl, targetZoneId, true);
+  }
+
   // ─── PLAYER CLICK HANDLERS ─────────────────────────────────────
 
-  function onCardClick(card) {
+  function onCardClick(card, sourceEl) {
     if (targetMode) return;
 
     const state = GameEngine.getState();
     if (!state.waitingForInput || state.actionsRemaining <= 0) return;
     if (state.hermioneAbilityPending) return;
+    if (state.pendingOpponentCreatureChoice) return;
 
     clearCardPreview();
+
+    // Fire flying animation before state changes so we capture the live DOM rect
+    if ((card.type === 'lesson' || card.type === 'creature') && sourceEl) {
+      const targetZoneId = card.type === 'lesson' ? 'player-lessons-zone' : 'player-creatures-zone';
+      animateCardPlay(card, sourceEl, targetZoneId, false);
+    }
+
     if (card.type === 'spell') showSpellStaging(card);
 
     const result = GameEngine.playerPlayCard(card);
@@ -560,6 +712,12 @@ const UI = (() => {
     deckEl.classList.remove('target-available');
     deckEl.style.cursor = '';
     deckEl.removeEventListener('click', handleOpponentDeckClick);
+  }
+
+  function onOwnCreatureClick(creature) {
+    if (!GameEngine.getState().pendingOpponentCreatureChoice) return;
+    clearCardPreview();
+    GameEngine.playerResolveTakeRoot(creature);
   }
 
   function cancelTargetMode() {

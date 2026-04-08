@@ -169,7 +169,7 @@
         "type": "spell",
         "powerCost": 6,
         "lessonCostType": "T",
-        "effectCode": "damage_creature_or_opponent_4",
+        "effectCode": "discard_opponent_creature",
         "text": "Choose 1 of your opponent's Creatures in play and discard it."
     },
     "take_root":
@@ -179,7 +179,7 @@
         "type": "spell",
         "powerCost": 5,
         "lessonCostType": "T",
-        "effectCode": "damage_creature_or_opponent_4",
+        "effectCode": "opponent_chooses_discard_creature",
         "text": "Your opponent choose 1 of his or her Creatures in play and discard it."
     }
 }
