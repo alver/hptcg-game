@@ -300,29 +300,48 @@
 .hp-badge          { bottom: -8px; right: -8px; background: linear-gradient(135deg, #3498db, #2980b9); }
 .dmg-counter-badge { top: -8px; right: -8px; background: linear-gradient(135deg, #e74c3c, #c0392b); border-color: rgba(255,255,255,0.5); }
 
-/* ── Lesson stacks ── */
-.lesson-stack {
-  position: relative;
-  width: 84px;
-  height: 118px;
+/* ── Lessons icon panel (compact, next to char card) ── */
+.lessons-panel {
+  width: 64px;
+  align-self: stretch;
   flex-shrink: 0;
-  cursor: pointer;
-  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(201,168,76,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px 6px 10px;
+  position: relative;
 }
-.lesson-count {
-  position: absolute;
-  bottom: -8px;
-  right: -8px;
-  background: #111;
-  border: 2px solid var(--gold);
-  color: var(--gold);
-  padding: 2px 6px;
-  border-radius: 5px;
-  font-size: 15px;
+
+.lesson-icon-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.lesson-icon-item:hover { opacity: 0.85; }
+
+.lesson-icon-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));
+  flex-shrink: 0;
+}
+
+.lesson-icon-count {
+  font-family: var(--f-heading);
+  font-size: 20px;
   font-weight: 700;
-  z-index: 20;
-  font-family: var(--f-mono);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  text-shadow: 0 0 6px rgba(201,168,76,0.5);
+  line-height: 1;
 }
 
 /* ── Center strip: just the dividing line ── */

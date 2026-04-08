@@ -7,6 +7,7 @@ const UI = (() => {
   };
   const LESSON_NAMES = { F: 'CoMC', C: 'Charms', T: 'Transf.', P: 'Potions', Q: 'Quidditch' };
   const LESSON_ICONS = { F: '\uD83E\uDD8E', C: '\u2728', T: '\uD83D\uDD04', P: '\uD83E\uDDEA', Q: '\uD83C\uDFC6' };
+  const LESSON_ICON_FILES = { F: 'cofc', C: 'charms', T: 'transfiguration', P: 'potions', Q: 'quidditch' };
   const INITIAL_DECK_SIZE = 40;
   const HORIZONTAL_TYPES = new Set(['lesson', 'creature', 'character']);
 
@@ -184,7 +185,7 @@ const UI = (() => {
   function renderBoardHalf(player, side, state) {
     const isBot = side === 'bot';
 
-    // Lessons zone
+    // Lessons panel (icon-based)
     const lessonsZone = document.getElementById(side + '-lessons-zone');
     const zoneTitle = lessonsZone.querySelector('.zone-title');
     lessonsZone.innerHTML = '';
@@ -195,7 +196,7 @@ const UI = (() => {
       lessonGroups[l.lessonType].count++;
     }
     for (const [type, group] of Object.entries(lessonGroups)) {
-      const el = createLessonStack(type, group.count, group.card);
+      const el = createLessonIconItem(type, group.count, group.card);
       el.addEventListener('mouseenter', () => showCardPreview(group.card));
       el.addEventListener('mouseleave', clearCardPreview);
       lessonsZone.appendChild(el);
@@ -258,19 +259,24 @@ const UI = (() => {
     }
   }
 
-  function createLessonStack(type, count, sampleCard) {
-    const stack = document.createElement('div');
-    stack.className = 'lesson-stack horizontal'; // lessons are always landscape
+  function createLessonIconItem(type, count, sampleCard) {
+    const item = document.createElement('div');
+    item.className = 'lesson-icon-item';
+    item.title = `${LESSON_NAMES[type] || type}: ${count}`;
 
-    stack.appendChild(makeCardImg(sampleCard, 'lesson-stack-img horizontal'));
+    const iconFile = LESSON_ICON_FILES[type] || type.toLowerCase();
+    const img = document.createElement('img');
+    img.src = `assets/icons/${iconFile}.png`;
+    img.alt = LESSON_NAMES[type] || type;
+    img.className = 'lesson-icon-img';
+    item.appendChild(img);
 
-    const badge = document.createElement('span');
-    badge.className = 'lesson-count';
-    badge.textContent = '\u00d7' + count;
-    badge.title = `${LESSON_NAMES[type] || type}: ${count}`;
-    stack.appendChild(badge);
+    const countEl = document.createElement('span');
+    countEl.className = 'lesson-icon-count';
+    countEl.textContent = count;
+    item.appendChild(countEl);
 
-    return stack;
+    return item;
   }
 
   function createCreatureThumb(creatureInPlay, state) {
