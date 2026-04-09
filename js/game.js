@@ -328,7 +328,6 @@ const GameEngine = (() => {
       if (extraLessons.length > 0) {
         state.hermioneAbilityPending = true;
         notify();
-        checkActionsExhausted();
         return { ok: true, hermioneAbility: true, availableLessons: extraLessons };
       }
     }
@@ -343,13 +342,13 @@ const GameEngine = (() => {
     state.hermioneAbilityPending = false;
     if (!card) {
       addLog('You skip the Hermione bonus lesson.', 'action');
-      notify();
-      return { ok: true };
+    } else {
+      removeFromHand(state.player, card);
+      state.player.lessonsInPlay.push(card);
+      addLog(`Hermione ability: You also play ${card.name} for free.`, 'action');
     }
-    removeFromHand(state.player, card);
-    state.player.lessonsInPlay.push(card);
-    addLog(`Hermione ability: You also play ${card.name} for free.`, 'action');
     notify();
+    checkActionsExhausted();
     return { ok: true };
   }
 
@@ -471,9 +470,8 @@ const GameEngine = (() => {
   }
 
   function checkActionsExhausted() {
-    if (state.actionsRemaining <= 0 && state.waitingForInput) {
+    if (state.actionsRemaining <= 0 && state.waitingForInput && !state.hermioneAbilityPending) {
       state.waitingForInput = false;
-      state.hermioneAbilityPending = false;
       setTimeout(() => proceedToEndTurn(), 300);
     }
   }

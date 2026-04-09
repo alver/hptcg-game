@@ -223,7 +223,7 @@ const UI = (() => {
     el.className = 'hand-card';
     if (isHoriz) el.classList.add('horizontal');
     if (playable) el.classList.add('playable');
-    else if (card.type !== 'lesson') el.classList.add('unaffordable');
+    else el.classList.add('unaffordable');
 
     el.appendChild(makeCardImg(card, 'hand-card-img' + (isHoriz ? ' horizontal' : '')));
 
@@ -596,8 +596,8 @@ const UI = (() => {
   function animateCardPlay(card, sourceEl, targetZoneId, isBot) {
     return new Promise(resolve => {
       const isHoriz = CardManager.isHorizontal(card);
-      const W = isHoriz ? 126 : 90;
-      const H = isHoriz ? 90 : 126;
+      const W = isHoriz ? 140 : 100;
+      const H = isHoriz ? 100 : 140;
       const sourceRect = sourceEl.getBoundingClientRect();
       const targetEl = document.getElementById(targetZoneId);
       const destRect = targetEl ? targetEl.getBoundingClientRect() : null;
@@ -620,7 +620,7 @@ const UI = (() => {
 
     const sourceRect = deckEl.getBoundingClientRect();
     const destRect = discardEl.getBoundingClientRect();
-    const W = 84, H = 118; // matches .pile-card dimensions
+    const W = 100, H = 140; // matches .pile-card dimensions
     const STAGGER = 70;
 
     for (let i = 0; i < count; i++) {
@@ -649,8 +649,8 @@ const UI = (() => {
     const destRect = handEl.getBoundingClientRect();
 
     const isHoriz = isPlayer && CardManager.isHorizontal(card);
-    const W = isHoriz ? 126 : 90;
-    const H = isHoriz ? 90 : 126;
+    const W = isHoriz ? 140 : 100;
+    const H = isHoriz ? 100 : 140;
 
     const centeredFrom = {
       left: sourceRect.left + (sourceRect.width - W) / 2,

@@ -27,8 +27,8 @@
 }
 
 .deck-back-card {
-  width: 90px;
-  height: 126px;
+  width: 100px;
+  height: 140px;
   border-radius: 4px;
   background: url('../assets/cards/cardback.webp') center/cover no-repeat;
   border: none;
@@ -73,8 +73,8 @@
   flex-shrink: 0;
 }
 .pile-card {
-  width: 84px;
-  height: 118px;
+  width: 100px;
+  height: 140px;
   border-radius: 4px;
   position: relative;
   box-shadow: 0 10px 20px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1);
@@ -175,13 +175,12 @@
 .zone-title {
   position: absolute;
   top: -10px;
-  left: 10px;
+  left: 3px;
   font-family: var(--f-heading);
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(201,168,76,0.5);
-  background: var(--bg);
+  color: rgba(201,168,76,0.75);
   padding: 0 5px;
   white-space: nowrap;
 }
@@ -190,12 +189,13 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
   justify-content: center;
+  align-self: center;
+  height: 130px;
 }
 .board-zones-center .board-zone {
-  min-height: 0;
   flex: 1;
+  min-height: 0;
 }
 
 /* Character zone: sized to hug the char-card */
@@ -219,8 +219,8 @@
 
 /* ── Card thumbnail (creatures on board) ── */
 .card-thumb {
-  width: 84px;
-  height: 118px;
+  width: 100px;
+  height: 140px;
   border-radius: 4px;
   position: relative;
   background: #1a2035;
@@ -247,7 +247,7 @@
 
 /* ── Character card ── */
 .char-card {
-  width: 110px;
+  width: 100px;
   height: 140px;
   border-radius: 8px;
   display: flex;
@@ -262,18 +262,10 @@
 }
 .char-card:hover { box-shadow: 0 0 24px rgba(201,168,76,0.5); }
 .char-card.player-char {
-  width: 220px;
-  height: 280px;
   border: 2px solid var(--gold);
   box-shadow: 0 0 20px rgba(201,168,76,0.4);
 }
-.char-card.player-char.horizontal {
-  width: 280px;
-  height: 200px;
-}
 .char-card.bot-char {
-  width: 220px;
-  height: 280px;
   border: 2px solid var(--bot-blue);
   box-shadow: 0 0 20px rgba(123,142,160,0.4);
 }
@@ -303,7 +295,8 @@
 /* ── Lessons icon panel (compact, next to char card) ── */
 .lessons-panel {
   width: 64px;
-  align-self: stretch;
+  height: 130px;
+  align-self: center;
   flex-shrink: 0;
   border-radius: 8px;
   background: rgba(0,0,0,0.2);
@@ -327,10 +320,10 @@
 .lesson-icon-item:hover { opacity: 0.85; }
 
 .lesson-icon-img {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.75));
   flex-shrink: 0;
 }
 
@@ -424,8 +417,8 @@
 }
 
 .hand-card {
-  width: 90px;
-  height: 126px;
+  width: 100px;
+  height: 140px;
   border-radius: 6px;
   transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
   cursor: pointer;

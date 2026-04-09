@@ -12,10 +12,10 @@
 }
 
 /* Landscape card containers (all share ratio W/H = 1.4) */
-.hand-card.horizontal    { width: 126px; height: 90px; }
-.card-thumb.horizontal   { width: 118px; height: 84px; }
-.lesson-stack.horizontal { width: 118px; height: 84px; }
-.char-card.horizontal    { width: 280px; height: 200px; }
+.hand-card.horizontal    { width: 140px; height: 100px; }
+.card-thumb.horizontal   { width: 140px; height: 100px; }
+.lesson-stack.horizontal { width: 140px; height: 100px; }
+.char-card.horizontal    { width: 140px; height: 100px; }
 
 /* Horizontal image trick:
    Give the img portrait CSS dims (swapped from landscape container) so object-fit:cover
@@ -46,8 +46,8 @@
 /* ── Card hover preview (floating, left-center) ── */
 #card-hover-preview {
   position: fixed;
-  left: 24px;
-  top: 50%;
+  right: 400px;
+  top: 45%;
   transform: translateY(-50%);
   z-index: 3000;
   pointer-events: none;
