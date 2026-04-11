@@ -190,7 +190,7 @@ Contains the **Duel log** (`.log-section`) — flex-grows to fill available spac
 - **Draw (1)** — `.ctrl-btn`, gold-tinted. Enabled only during the player's action phase when actions remain.
 - **END TURN** — `.ctrl-btn.draw-btn`. Ends the player's turn, skipping any remaining actions.
 - **Hermione bonus lesson prompt** — floating banner (`#hermione-prompt`) that appears when the player's character has `hermione_double_lesson` ability and 2+ lessons are already in play. Shows lesson buttons + "Skip".
-- **Target banner** (`#target-banner`) — red banner in the screen center while the player is selecting a target for a spell. Shows "Choose a target" + Cancel button.
+- **Target banner** (`#target-banner`) — red banner in the screen center while the player is selecting a target for a spell. Shows "Choose a target for your spell" + Cancel button.
 - **Take Root banner** (`#take-root-banner`) — banner when the opponent forces the player to choose one of their own creatures to discard.
 
 ## Card Visual Design
@@ -232,7 +232,7 @@ All card-flight animations use the shared `createFlyingCard()` + `flyTo()` helpe
 - **Clicking a card** — selects it for play; a second click or a target click confirms.
 - **Hover preview** — `#card-hover-preview`, a large floating card (372×520 portrait, 520×372 landscape) fixed 400 px from the right viewport edge, vertically centered at 45%, while hovering any small card (hand, thumb, lesson icon, discard grid).
 - **Playing a lesson or creature** — a flying card is created at the hand card's exact screen position, then CSS-transitioned to the center of the target zone (`.player-lessons-zone` / `.player-creatures-zone`) over ~450 ms while scaling to 0.8 and fading out.
-- **Playing a spell** — card appears as a `.spell-spotlight` with the `spell-appear` keyframe (scale/blur/fade), then auto-removes after 2.5s.
+- **Playing a spell** — card appears as a `.spell-spotlight` with the `spell-appear` keyframe (scale/blur/fade), then auto-removes after 2.6s.
 - **Drawing a card** — a flying card is created centered on the deck pile and transitions to the center of the hand fan over ~450 ms. For the player, the flying card shows the actual card face; for the bot, it shows a card-back.
 
 ### Bot turn
@@ -240,7 +240,7 @@ All card-flight animations use the shared `createFlyingCard()` + `flyTo()` helpe
 - When the bot plays a lesson or creature, a face-down flying card animates from a hand card to the target zone before the state updates. When the bot draws, a face-down flying card travels from the bot deck up to the bot hand fan.
 
 ### Shared animations
-- **Deck mill (damage)** — for each card milled, a face-down flying card (84×118, matching the pile-card size) flies from the deck pile to the discard pile with a 70 ms stagger between cards. The hook fires inside `CardManager.dealDamageToPlayer` so it triggers for both creature damage and spell damage uniformly.
+- **Deck mill (damage)** — for each card milled, a face-down flying card (100×140, matching the pile-card size) flies from the deck pile to the discard pile with a 70 ms stagger between cards. The hook fires inside `CardManager.dealDamageToPlayer` so it triggers for both creature damage and spell damage uniformly.
 - **Creature taking damage** — the damage counter badge appears or increments on the creature.
 - **Creature destroyed** — creature card is removed from the board zone.
 - **Target-available pulse** — valid targets get a red `pulse-red` animation on their border.

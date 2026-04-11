@@ -333,10 +333,14 @@
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--gold);
-  text-shadow: 0 0 6px rgba(201,168,76,0.5);
   line-height: 1;
 }
+/* Lesson type colors */
+.lesson-type-c { color: #5b9bd5; text-shadow: 0 0 6px rgba(91,155,213,0.5); }   /* Charms — blue */
+.lesson-type-t { color: #e07040; text-shadow: 0 0 6px rgba(224,112,64,0.5); }   /* Transfiguration — orange/red */
+.lesson-type-f { color: #6aad6a; text-shadow: 0 0 6px rgba(106,173,106,0.5); }  /* CoMC — brown/green */
+.lesson-type-p { color: #a97bd6; text-shadow: 0 0 6px rgba(169,123,214,0.5); }  /* Potions — purple */
+.lesson-type-q { color: var(--gold); text-shadow: 0 0 6px rgba(201,168,76,0.5); } /* Quidditch — gold */
 
 /* ── Center strip: just the dividing line ── */
 .center-strip {

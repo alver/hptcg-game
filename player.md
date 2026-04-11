@@ -20,7 +20,7 @@ Actions remaining are shown as two large gold dots (`.big-action-dot`) on the ce
 ## Targeting
 
 When a spell requires choosing a target (e.g., `damage_creature_or_opponent_X`, `discard_opponent_creature`):
-- A red banner (`#target-banner`) appears with "Choose a target" and a Cancel button.
+- A red banner (`#target-banner`) appears with "Choose a target for your spell" and a Cancel button.
 - Valid targets gain a pulsing red border (`.target-available`, `pulse-red` animation):
   - Opponent's creatures in the creatures zone.
   - Opponent's deck area (for direct damage to opponent).

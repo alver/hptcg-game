@@ -337,7 +337,7 @@ const UI = (() => {
     item.appendChild(img);
 
     const countEl = document.createElement('span');
-    countEl.className = 'lesson-icon-count';
+    countEl.className = `lesson-icon-count lesson-type-${type.toLowerCase()}`;
     countEl.textContent = count;
     item.appendChild(countEl);
 
