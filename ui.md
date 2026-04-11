@@ -3,9 +3,9 @@
 ## Application Flow
 
 ```
-deck_select.html  ──(START DUEL)──>  index.html
-       ↑                                  │
-       └──────(CHANGE DECKS / no choice)──┘
+deck_select.html  ───  (START DUEL)  ──>  index.html
+       ↑                        ↑          │
+       └──────(CHANGE DECKS / PLAY AGAIN)──┘
 ```
 
 1. `deck_select.html` is the application entry point. The player selects one deck for themselves and one for the bot, then clicks START DUEL.
@@ -28,18 +28,19 @@ deck_select.html  ──(START DUEL)──>  index.html
 │  SELECT DECKS        │  DECK NAME (uppercase)     │  CARD PREVIEW         │
 │                      │  Deck description italic   │  (spotlight hover)    │
 │ ┌──────────────────┐ │                            │                       │
-│ │ Hermione Granger │ │  ┌─────┐ ┌─────┐ ┌─────┐ │  ┌─────────────────┐  │
-│ │ Starter Deck     │ │  │card │ │card │ │card │ │  │                 │  │
-│ │ (40 cards)       │ │  │ ×12 │ │  ×7 │ │  ×4 │ │  │   Full-size     │  │
-│ │ [👤 Me] [🤖 Bot] │ │  └─────┘ └─────┘ └─────┘ │  │   card image    │  │
-│ ├──────────────────┤ │  ┌─────┐ ┌─────┐ ┌─────┐ │  │                 │  │
-│ │ Draco Malfoy     │ │  │card │ │card │ │card │ │  └─────────────────┘  │
-│ │ Starter Deck     │ │  │  ×3 │ │  ×2 │ │  ×2 │ │                       │
-│ │ (40 cards)       │ │  └─────┘ └─────┘ └─────┘ │                       │
-│ │ [👤 Me] [🤖 Bot] │ │        ...more cards...   │                       │
+│ │ Hermione Granger │ │  ┌─────┐ ┌─────┐ ┌─────┐   │  ┌─────────────────┐  │
+│ │ Starter Deck     │ │  │card │ │card │ │card │   │  │                 │  │
+│ │ (40 cards)       │ │  │ ×12 │ │  ×7 │ │  ×4 │   │  │   Full-size     │  │
+│ │ [👤 Me] [🤖 Bot] │ │  └─────┘ └─────┘ └─────┘   │  │   card image    │  │
+│ ├──────────────────┤ │  ┌─────┐ ┌─────┐ ┌─────┐   │  │                 │  │
+│ │ Draco Malfoy     │ │  │card │ │card │ │card │   │  └─────────────────┘  │
+│ │ Starter Deck     │ │  │  ×3 │ │  ×2 │ │  ×2 │   │                       │
+│ │ (40 cards)       │ │  └─────┘ └─────┘ └─────┘   │                       │
+│ │ [👤 Me] [🤖 Bot] │ │        ...more cards...    │                       │
 │ └──────────────────┘ │                            │                       │
 ├──────────────────────┴────────────────────────────┴───────────────────────┤
-│  👤 Your Deck: Hermione Granger ✓    🤖 Bot: Draco Malfoy ✓   [START DUEL]│
+│  👤 Your Deck: Hermione Granger ✓                          [START DUEL]   |
+│  🤖 Bot: Draco Malfoy ✓                                                   │
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -112,27 +113,27 @@ The screen is split into two vertical regions:
 
 ```
 ┌─────────────────────────────────────────────────────────────┬──────────────┐
-│                    ┌──────────────────┐                     │              │
-│  DRACO MALFOY      │  Bot hand (fan)  │                     │              │
-│  STARTER DECK      └──────────────────┘                     │              │
-│                                                             │              │
-│  ┌──────────┐   ┌─ LESSONS ──────────────────┐  ┌────────┐ │  DUEL LOG    │
-│  │  Draco   │   │ [Charms×3]                 │  │  Deck  │ │  Turn N      │
-│  │  (char)  │   ├─ CREATURES ────────────────┤  │ (25)   │ │              │
-│  │          │   │                            │  ├────────┤ │  [log entry] │
-│  └──────────┘   └────────────────────────────┘  │Discard │ │  [log entry] │
-│                                                  └────────┘ │  [log entry] │
-│  ────────●●────────── dividing line ────────────────────── │     ...      │
-│                                                             │              │
-│  ┌──────────┐   ┌─ LESSONS ──────────────────┐  ┌────────┐ │              │
-│  │ Hermione │   │ [CoMC×1] [Transfig×1]      │  │  Deck  │ │              │
-│  │  (char)  │   ├─ CREATURES ────────────────┤  │ (23)   │ │              │
-│  │          │   │ [Forest Troll] [Raven]     │  ├────────┤ │              │
-│  └──────────┘   └────────────────────────────┘  │Discard │ │              │
-│  HERMIONE GRANGER                                └────────┘ │              │
-│  STARTER DECK      ┌──────────────────┐                     │              │
-│                    │ Player hand (fan)│   [DRAW] [END TURN] │              │
-│                    └──────────────────┘                     │              │
+│  BOT DECK NAME     ┌────────────────────┐                   │ DUEL LOG     │
+│                    │  Bot hand │  │  │  │                   │       Turn N │
+│                    └────────────────────┘                   │              │
+│                                                             │ Turn 1       │
+│  ┌───────────┐ ┌ LESSONS ┐ ┌ CREATURES ───────┐ ┌───────┐   │ [log entry]  │
+│  │ Character │ │ C    3  │ │                  │ │ Deck  │   │ [log entry]  │
+│  │           │ │ CoCM 1  │ │[Raven] [Raven]   │ │ (25)  │   │ ...          │
+│  │           │ │         │ │                  │ ├───────┤   │              │
+│  └───────────┘ └─────────┘ └──────────────────┘ │Discard│   │ Turn 2       │
+│                                                 └───────┘   │ [log entry]  │
+│  ──●─●─────────────── dividing line ─────────────────────── │ [log entry]  │
+│                                                             │ ...          │
+│  ┌───────────┐ ┌ LESSONS ┐ ┌ CREATURES ───────┐ ┌───────┐   │              │
+│  │ Character │ │ C    3  │ │                  │ │ Deck  │   │ Turn N       │
+│  │  (char)   │ │ CoCM 1  │ │[Forest Troll]    │ │ (23)  │   │ ...          │
+│  │           │ │         │ │                  │ ├───────┤   │              │
+│  └───────────┘ └─────────┘ └──────────────────┘ │Discard│   │              │
+│                                                 └───────┘   │              │
+│                    ┌──────────────────────┐                 │              │
+│                    │ Player hand │  │  │  │      [DRAW]     │              │
+│  PLAYER DECK NAME  └──────────────────────┘      [END TURN] │              │
 └─────────────────────────────────────────────────────────────┴──────────────┘
          main board (.board-main)                               sidebar-left
 ```
@@ -145,26 +146,29 @@ The screen is split into two vertical regions:
 Top to bottom, the board is five rows:
 
 1. **Bot hand row** (`.bot-hand-row`, ~10 vh) — fan of face-down card backs centered at top.
-2. **Bot board half** (`.board-half`, ~34 vh) — bot's character card (left), lessons/creatures zones (center), deck + discard pile (right).
+2. **Bot board half** (`.board-half`, ~34 vh) — bot's character card (left), lessons zones (represented by icons instead of real cards), creatures zones (center), deck + discard pile (right).
 3. **Center strip** (`.center-strip`) — a single 1 px gold line separating the two halves. The two big golden **action dots** (`.big-action-dot`) sit on this line, showing the current player's remaining actions for the turn.
-4. **Player board half** — mirror of the bot half: character card (left), lessons/creatures (center), deck + discard (right).
-5. **Player hand row** (`.player-hand-row`, ~20 vh) — fan of face-up cards centered at bottom. The **DRAW** and **END TURN** buttons float at the bottom-right (`.play-area-controls`).
+4. **Player board half** — mirror of the bot half: character card (left), lessons zone, creatures (center), deck + discard (right).
+5. **Player hand row** (`.player-hand-row`, ~20 vh) — fan of face-up cards centered at bottom. The **DRAW** and **END TURN** buttons float at the bottom-right one above another (`.play-area-controls`).
 
 ### Board half contents
 
 Each `.board-half` contains, left to right:
 
-- **Character card** (`.char-card.player-char` / `.char-card.bot-char`) — large portrait, 220×280 (or 280×200 if the artwork is landscape). Always visible, cannot be removed.
-- **Deck label** (`.play-area-deck-name`) — stacked under the character card reading e.g. "HERMIONE GRANGER / STARTER DECK" in Cinzel uppercase. Gold for the player, blue for the bot.
-- **Board zones** (`.board-zones-center`) — two stacked `.board-zone` rows:
-  - **LESSONS** — lesson icons grouped by type, each shown as a lesson icon image with a numeric count.
-  - **CREATURES** — individual creature thumbnails, each with damage / HP / damage-counter badges.
-- **Edge pile** (`.edge-pile`) — deck card on top, discard card below. The deck card shows a large centered count pill (`.deck-card .pile-badge`) whose color encodes remaining deck life based on the player's `initialDeckSize`:
-  - Green (`#4caf50`) — healthy (≥ 60% remaining)
-  - Yellow (`.deck-warning`) — low (20–60% remaining)
-  - Red (`.deck-danger`) — critical (< 20% remaining)
-- The **bot's** hand cards and deck card are rotated 180° so the card backs face the opponent.
-- **Discard pile** rendering uses `AbortController` signals to clean up event listeners between re-renders, avoiding the previous clone/replace pattern.
+- **Character zone** (`.board-zone.char-zone`) — wraps the character card (`.char-card.player-char` / `.char-card.bot-char`), 100×140 px portrait (140×100 landscape for horizontal cards). Always visible, cannot be removed. Player's card has a gold border; bot's has a blue border.
+- **Lessons panel** (`.lessons-panel`) — compact 64×130 px icon panel (not a `.board-zone`). Each lesson type in play is shown as a `.lesson-icon-item`: a 30×30 px icon image (`.lesson-icon-img`) + numeric count (`.lesson-icon-count`) in Cinzel gold. Clicking an icon shows the hover preview.
+- **Creatures zone** (`.board-zones-center` → single `.board-zone`) — individual creature thumbnails (`.card-thumb`), each with stat badges.
+- **Edge pile** (`.edge-pile`) — deck card and discard card, mirrored so both deck cards face the center strip:
+  - Player: deck (`.deck-card.player-deck-card`) on top, discard (`.discard-card.player-discard-card`) below.
+  - Bot: discard (`.discard-card`) on top, deck (`.deck-card`) below.
+  - The deck card shows a large centered count pill (`.deck-card .pile-badge`) in Cinzel 30 px, color-coded by remaining deck life based on `initialDeckSize`:
+    - Green (`#4caf50`) — healthy (≥ 60% remaining)
+    - Yellow (`.deck-warning`) — low (20–60% remaining)
+    - Red (`.deck-danger`) — critical (< 20% remaining)
+  - The discard card shows the top card's artwork (`.discard-top-img`) when non-empty. A count badge (`.pile-badge.discard-badge`) is overlaid at bottom-right inside the card — Source Code Pro mono, 22 px, gold, dark background.
+- **Deck label** (`.play-area-deck-name`) — `position: absolute` inside the hand row, not the board half. Bot name (`.bot-area-name`) sits at the top of `.bot-hand-row` in blue; player name (`.player-area-name`) sits at the bottom of `.player-hand-row` in gold.
+- **Bot's hand cards** — rendered as `.deck-back-card` (face-down, rotated 180°). The bot deck pile card is not rotated.
+- **Discard pile** rendering uses `AbortController` signals to clean up event listeners between re-renders.
 
 ### Active-turn highlighting
 
@@ -183,7 +187,7 @@ Contains the **Duel log** (`.log-section`) — flex-grows to fill available spac
 
 ## Controls
 
-- **DRAW (1)** — `.ctrl-btn`, gold-tinted. Enabled only during the player's action phase when actions remain.
+- **Draw (1)** — `.ctrl-btn`, gold-tinted. Enabled only during the player's action phase when actions remain.
 - **END TURN** — `.ctrl-btn.draw-btn`. Ends the player's turn, skipping any remaining actions.
 - **Hermione bonus lesson prompt** — floating banner (`#hermione-prompt`) that appears when the player's character has `hermione_double_lesson` ability and 2+ lessons are already in play. Shows lesson buttons + "Skip".
 - **Target banner** (`#target-banner`) — red banner in the screen center while the player is selecting a target for a spell. Shows "Choose a target" + Cancel button.
@@ -197,8 +201,8 @@ Cards are rendered as full artwork images (`.hand-card-img`, `.thumb-img`, `.cha
 - `.dmg-badge` — bottom-left, red. Creature's damage-per-turn.
 - `.hp-badge` — bottom-right, blue. Creature's current HP (health − damage counters).
 - `.dmg-counter-badge` — top-right, red. Accumulated damage on a creature.
-- `.lesson-count` — `×N` pill on lesson stacks.
-- `.pile-badge` — small circular count on deck/discard piles (`.discard-badge` for discards).
+- `.deck-card .pile-badge` — large centered pill on the deck card (Cinzel 30 px, green/yellow/red health color, blurred dark background). Not circular — auto-sized pill.
+- `.pile-badge.discard-badge` — bottom-right inside the discard card (Source Code Pro mono, 22 px, gold border, dark background). Matches the deck-select screen's `.ds-card-count` style.
 
 ### Horizontal image trick
 
@@ -226,9 +230,9 @@ All card-flight animations use the shared `createFlyingCard()` + `flyTo()` helpe
 - **Unaffordable cards** — `.unaffordable`, dimmed to 45% opacity and grayscaled.
 - **Highlighted cards** — `.highlighted`, stronger gold glow (used for bonus-lesson prompts).
 - **Clicking a card** — selects it for play; a second click or a target click confirms.
-- **Hover preview** — `#card-hover-preview`, a large floating card (372×520 portrait, 520×372 landscape) pinned to the left edge of the screen while hovering any small card (hand, thumb, lesson stack, discard grid).
+- **Hover preview** — `#card-hover-preview`, a large floating card (372×520 portrait, 520×372 landscape) fixed 400 px from the right viewport edge, vertically centered at 45%, while hovering any small card (hand, thumb, lesson icon, discard grid).
 - **Playing a lesson or creature** — a flying card is created at the hand card's exact screen position, then CSS-transitioned to the center of the target zone (`.player-lessons-zone` / `.player-creatures-zone`) over ~450 ms while scaling to 0.8 and fading out.
-- **Playing a spell** — card appears as a `.spell-spotlight` with the `spell-appear` keyframe (scale/blur/fade), then auto-removes after 2.6s.
+- **Playing a spell** — card appears as a `.spell-spotlight` with the `spell-appear` keyframe (scale/blur/fade), then auto-removes after 2.5s.
 - **Drawing a card** — a flying card is created centered on the deck pile and transitions to the center of the hand fan over ~450 ms. For the player, the flying card shows the actual card face; for the bot, it shows a card-back.
 
 ### Bot turn
@@ -244,4 +248,4 @@ All card-flight animations use the shared `createFlyingCard()` + `flyTo()` helpe
 ## Modals
 
 - **Game-over overlay** (`.overlay` + `.overlay-box`) — dark blur with "PLAY AGAIN" and "CHANGE DECKS" buttons plus `.gameover-stats` summary (turns played, cards remaining for each player).
-- **Discard viewer** (`.discard-viewer-overlay` + `.discard-viewer-modal`) — opens when either discard pile is clicked; grid of all cards in that pile, scrollable. Empty piles show "No cards in discard pile." Clicking a card in the grid opens the full-size hover preview. Also used for card selection spells (Accio, Hagrid) — in that mode, cards are toggleable with a confirm/cancel action bar.
+- **Discard viewer** (`.discard-viewer-overlay` + `.discard-viewer-modal`) — opens when either discard pile is clicked; grid of all cards in that pile, scrollable. Empty piles show "No cards in discard pile." Clicking a card in the grid opens the full-size hover preview. Horizontal cards in the grid use `width: 140%; margin-left: -20%` to fill the slot rather than the rotation trick. Also used for card selection spells (Accio, Hagrid) — in that mode, cards are toggleable with a confirm/cancel action bar (`.card-pick-action-bar`).

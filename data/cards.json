@@ -1,43 +1,39 @@
 {
-    "hermione_granger_starter":
-    {
+    "hermione_granger_starter": {
         "name": "Hermione Granger",
         "image": "assets/cards/hermione_granger.webp",
         "type": "character",
         "effectCode": "hermione_double_lesson",
-        "text": "If you already have 2 or more Lessons in play, then whenever you use an Action to play a Lesson card, you may play 2 Lesson cards instead of 1."
+        "text": "If you already have 2 or more lessons in play, then whenever you use an action to play a lesson card, you may play 2 lesson cards instead of one.",
+        "traits": "Witch/Gryffindor/Unique"
     },
-    "draco_malfoy_starter":
-    {
+    "draco_malfoy_starter": {
         "name": "Draco Malfoy",
         "image": "assets/cards/draco_malfoy.webp",
         "type": "character",
         "effectCode": "draco_hand_disruption",
-        "text": "During your turn, you may use an Action and discard a card from your hand to look at your opponent's hand. You may then choose 1 card in his or her hand and discard it."
+        "text": "During your turn, you may use an action and discard a card from your hand to look at your opponent's hand. You may then choose one card in his or her hand and discard it.",
+        "traits": "Wizard/Slytherin/Unique"
     },
-    "lesson_comc":
-    {
+    "lesson_comc": {
         "name": "Care of Magical Creatures",
         "image": "assets/cards/care_of_magical_creatures.webp",
         "type": "lesson",
         "lessonType": "F"
     },
-    "lesson_charms":
-    {
+    "lesson_charms": {
         "name": "Charms",
         "image": "assets/cards/charms.webp",
         "type": "lesson",
         "lessonType": "C"
     },
-    "lesson_transfiguration":
-    {
+    "lesson_transfiguration": {
         "name": "Transfiguration",
         "image": "assets/cards/transfiguration.webp",
         "type": "lesson",
         "lessonType": "T"
     },
-    "accio":
-    {
+    "accio": {
         "name": "Accio",
         "image": "assets/cards/accio.webp",
         "type": "spell",
@@ -46,8 +42,7 @@
         "effectCode": "return_from_discard_lesson_2",
         "text": "Put up to 2 Lesson cards from your discard pile into your hand."
     },
-    "boa_constrictor":
-    {
+    "boa_constrictor": {
         "name": "Boa Constrictor",
         "image": "assets/cards/boa_constrictor.webp",
         "type": "creature",
@@ -57,8 +52,7 @@
         "health": 2,
         "text": "Damage each turn: 2. Health: 2."
     },
-    "curious_raven":
-    {
+    "curious_raven": {
         "name": "Curious Raven",
         "image": "assets/cards/curious_raven.webp",
         "type": "creature",
@@ -68,8 +62,7 @@
         "health": 1,
         "text": "Damage each turn: 1. Health: 1."
     },
-    "hagrid_and_the_stranger":
-    {
+    "hagrid_and_the_stranger": {
         "name": "Hagrid and the Stranger",
         "image": "assets/cards/hagrid_and_the_stranger.webp",
         "type": "spell",
@@ -78,8 +71,7 @@
         "effectCode": "return_from_discard_creature_1",
         "text": "Put a Creature card from your discard pile into your hand."
     },
-    "magical_mishap":
-    {
+    "magical_mishap": {
         "name": "Magical Mishap",
         "image": "assets/cards/magical_mishap.webp",
         "type": "spell",
@@ -88,8 +80,7 @@
         "effectCode": "damage_opponent_3",
         "text": "Do 3 damage to your opponent."
     },
-    "stupefy":
-    {
+    "stupefy": {
         "name": "Stupefy",
         "image": "assets/cards/stupefy.webp",
         "type": "spell",
@@ -98,8 +89,7 @@
         "effectCode": "damage_opponent_5",
         "text": "Do 5 damage to your opponent."
     },
-    "surly_hound":
-    {
+    "surly_hound": {
         "name": "Surly Hound",
         "image": "assets/cards/surly_hound.webp",
         "type": "creature",
@@ -109,8 +99,7 @@
         "health": 3,
         "text": "Damage each turn: 1. Health: 3."
     },
-    "vermillious":
-    {
+    "vermillious": {
         "name": "Vermillious",
         "image": "assets/cards/vermillious.webp",
         "type": "spell",
@@ -119,18 +108,16 @@
         "effectCode": "damage_creature_or_opponent_3",
         "text": "Do 3 damage to your opponent or to a Creature of your choice."
     },
-    "avifors":
-    {
+    "avifors": {
         "name": "Avifors",
         "image": "assets/cards/avifors.webp",
         "type": "spell",
         "powerCost": 2,
         "lessonCostType": "T",
         "effectCode": "discard_opponent_lesson_F",
-        "text": "Choose 1 of your opponent's Care of Magical Creatures Lesson in play and discard it."
+        "text": "Choose 1 of your opponent's F Lessons in play and discard it."
     },
-    "vicious_wolf":
-    {
+    "vicious_wolf": {
         "name": "Vicious Wolf",
         "image": "assets/cards/vicious_wolf.webp",
         "type": "creature",
@@ -140,18 +127,16 @@
         "health": 3,
         "text": "Damage each turn: 3. Health: 3."
     },
-    "epoximise":
-    {
+    "epoximise": {
         "name": "Epoximise",
         "image": "assets/cards/epoximise.webp",
         "type": "spell",
         "powerCost": 2,
         "lessonCostType": "T",
         "effectCode": "discard_opponent_lesson_C",
-        "text": "Choose 1 of your opponent's Charm Lessons in play and discard it."
+        "text": "Choose 1 of your opponent's C Lessons in play and discard it."
     },
-    "forest_troll":
-    {
+    "forest_troll": {
         "name": "Forest Troll",
         "image": "assets/cards/forest_troll.webp",
         "type": "creature",
@@ -160,10 +145,9 @@
         "discardLessonTypeOnPlay": "F",
         "damage": 2,
         "health": 3,
-        "text": "To play this card, discard 1 of your Care of Magical Creatures Lessons from play. Damage each turn: 2. Health: 3."
+        "text": "To play this card, discard 1 of your F Lessons from play."
     },
-    "incarcifors":
-    {
+    "incarcifors": {
         "name": "Incarcifors",
         "image": "assets/cards/incarcifors.webp",
         "type": "spell",
@@ -172,14 +156,741 @@
         "effectCode": "discard_opponent_creature",
         "text": "Choose 1 of your opponent's Creatures in play and discard it."
     },
-    "take_root":
-    {
+    "take_root": {
         "name": "Take Root",
         "image": "assets/cards/take_root.webp",
         "type": "spell",
         "powerCost": 5,
         "lessonCostType": "T",
         "effectCode": "opponent_chooses_discard_creature",
-        "text": "Your opponent choose 1 of his or her Creatures in play and discard it."
+        "text": "Your opponent chooses 1 of his or her Creatures in play and discards it."
+    },
+    "dean_thomas": {
+        "name": "Dean Thomas",
+        "type": "character",
+        "traits": "Wizard/Gryffindor/Unique",
+        "text": "Once per game, draw 3 cards."
+    },
+    "draco_malfoy_3": {
+        "name": "Draco Malfoy",
+        "type": "character",
+        "traits": "Wizard/Slytherin/Unique",
+        "text": "During your turn, you may use an action and discard a card from your hand to look at your opponent's hand. You may then choose one card in his or her hand and discard it."
+    },
+    "dragon_s_escape": {
+        "name": "Dragon's Escape",
+        "type": "adventure",
+        "effect": "Before each of your turns, your opponent takes 1 damage.",
+        "toSolve": "Your opponent chooses 3 of his or her Lessons in play and discard them.",
+        "reward": "Your opponent draws 3 cards or does 3 damage to you."
+    },
+    "elixir_of_life": {
+        "name": "Elixir of Life",
+        "type": "spell",
+        "subTypes": [
+            "healing"
+        ],
+        "powerCost": 10,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 2 of your P Lessons from play. Shuffle up to 16 Non-Healing cards from your discard pile into your deck."
+    },
+    "gringotts_cart_ride": {
+        "name": "Gringotts' Cart Ride",
+        "type": "adventure",
+        "effect": "Before each of your opponent's turns, he or she chooses a card in his or her hand (if any) and discards it.",
+        "toSolve": "Your opponent skips a total of 5 Actions. (Those Actions don't have to be one right after the other.)",
+        "reward": "Your opponent may draw 5 cards."
+    },
+    "hannah_abbott": {
+        "name": "Hannah Abbott",
+        "type": "character",
+        "traits": "Witch/Hufflepuff/Unique",
+        "text": "Once per game, you may trade 2 cards in your hand for 2 non-Healing cards in your discard pile."
+    },
+    "harry_potter": {
+        "name": "Harry Potter",
+        "type": "character",
+        "traits": "Wizard/Gryffindor/Unique",
+        "text": "Whenever you use an Action to draw a card, you may draw 2 cards instead of 1."
+    },
+    "hermione_granger_10": {
+        "name": "Hermione Granger",
+        "type": "character",
+        "traits": "Witch/Gryffindor/Unique",
+        "text": "If you already have 2 or more lessons in play, then whenever you use an action to play a lesson card, you may play 2 lesson cards instead of one."
+    },
+    "human_chess_game": {
+        "name": "Human Chess Game",
+        "type": "adventure",
+        "effect": "During each of your opponent's turns, he or she can play cards only if you played 1 or more cards on your previous turn.",
+        "toSolve": "Your opponent chooses and discards 1 of his or her Characters in play (other than his or her starting character) or 8 cards from their hand.",
+        "reward": "Your opponent may draw 3 cards."
+    },
+    "invisibility_cloak": {
+        "name": "Invisibility Cloak",
+        "type": "item",
+        "traits": "Gryffindor/Unique",
+        "powerCost": 13,
+        "lessonCostType": "T",
+        "text": "Once during each of your opponent's turns, you may prevent all damage done by a spell card."
+    },
+    "nearly_headless_nick": {
+        "name": "Nearly Headless Nick",
+        "type": "character",
+        "traits": "Gryffindor/Unique",
+        "text": "Once per game, you may search your deck. When you do, you may take up to 2 Item cards from your deck, show them to your opponent, and put them into your hand. Then shuffle your deck."
+    },
+    "obliviate": {
+        "name": "Obliviate",
+        "type": "spell",
+        "powerCost": 12,
+        "lessonCostType": "C",
+        "text": "Your opponent discards his or her hand."
+    },
+    "professor_filius_flitwick": {
+        "name": "Professor Filius Flitwick",
+        "type": "character",
+        "traits": "Wizard/Ravenclaw/Unique",
+        "provides": "1C",
+        "text": "Once per game, you may trade 2 cards in your hand for 1 card in your discard pile that needs C power."
+    },
+    "professor_severus_snape": {
+        "name": "Professor Severus Snape",
+        "type": "character",
+        "subTypes": [
+            "healing"
+        ],
+        "traits": "Wizard/Slytherin/Unique",
+        "provides": "1P",
+        "text": "Once per game, you may shuffle up to 7 non-Healing cards from your discard pile into your deck."
+    },
+    "ron_weasley": {
+        "name": "Ron Weasley",
+        "type": "character",
+        "traits": "Wizard/Gryffindor/Unique",
+        "text": "Whenever you play a Character card, you use up 1 Action to play it instead of 2."
+    },
+    "rubeus_hagrid": {
+        "name": "Rubeus Hagrid",
+        "type": "character",
+        "text": "Unique Whenever 1 of your creatures does 3 or more damage to your opponent, it does 2 more damage than it usually would."
+    },
+    "troll_in_the_bathroom": {
+        "name": "Troll in the Bathroom",
+        "type": "adventure",
+        "effect": "Before each of your turns, your opponent takes 2 damage.",
+        "toSolve": "Your opponent chooses 7 cards in his or her hand and discards them.",
+        "reward": "You take 4 damage."
+    },
+    "unicorn": {
+        "name": "Unicorn",
+        "type": "creature",
+        "powerCost": 6,
+        "lessonCostType": "F",
+        "health": 6,
+        "text": "To play this card, discard 1 of your F lessons from play. You get 1 more Action on each of your turns (including the turn you play Unicorn)."
+    },
+    "delivery_owl": {
+        "name": "Delivery Owl",
+        "type": "creature",
+        "powerCost": 2,
+        "lessonCostType": "F",
+        "health": 1,
+        "text": "To play this card, discard 1 of your F lessons from play. Before each of your turns, draw a card."
+    },
+    "draught_of_living_death": {
+        "name": "Draught of Living Death",
+        "type": "spell",
+        "powerCost": 8,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 2 of your P Lessons from play. Do 12 damage to your opponent or to a creature of your choice."
+    },
+    "harry_hunting": {
+        "name": "Harry Hunting",
+        "type": "adventure",
+        "effect": "Your opponent's Creature and Spell cards need 2 more Power to play.",
+        "toSolve": "Your opponent chooses 7 cards in his or her hand and discards them.",
+        "reward": "Your opponent may put a lesson card from his or her discard pile into play."
+    },
+    "history_of_magic": {
+        "name": "History of Magic",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "C",
+        "text": "Look at your opponent's hand. Discard all Adventure cards from it."
+    },
+    "incendio": {
+        "name": "Incendio",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "C",
+        "text": "Count the number of C lessons you have in play, Do that much damage to a creature of your choice."
+    },
+    "malevolent_mixture": {
+        "name": "Malevolent Mixture",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 2 of your P lessons from play. Do 10 damage to your opponent or to a Creature of your choice."
+    },
+    "meet_the_centaurs": {
+        "name": "Meet the Centaurs",
+        "type": "adventure",
+        "effect": "Your opponent plays with his or her hand face up.",
+        "toSolve": "Your opponent discards his or her hand. (Your opponent may do this even if his or her hand is empty.)",
+        "reward": "You play with your hand face up for the rest of the game."
+    },
+    "mountain_troll": {
+        "name": "Mountain Troll",
+        "type": "creature",
+        "powerCost": 8,
+        "lessonCostType": "F",
+        "damage": 4,
+        "health": 4
+    },
+    "mrs_norris": {
+        "name": "Mrs Norris",
+        "type": "creature",
+        "unique": true,
+        "powerCost": 2,
+        "lessonCostType": "F",
+        "health": 1,
+        "text": "Your opponent plays with his or her hand face up."
+    },
+    "norbert": {
+        "name": "Norbert",
+        "type": "creature",
+        "unique": true,
+        "powerCost": 4,
+        "lessonCostType": "F",
+        "damage": 5,
+        "health": 3,
+        "text": "To play this card, discard 2 of your F Lessons from play."
+    },
+    "phoenix_feather_wand": {
+        "name": "Phoenix Feather Wand",
+        "type": "item",
+        "subTypes": [
+            "wand"
+        ],
+        "powerCost": 7,
+        "lessonCostType": "C",
+        "provides": "4C",
+        "text": "Play this card only is you have cards in play that provide at least 3C Power. If you play this card, and you already have a Wand in play, discard the old one."
+    },
+    "platform_9_3_4": {
+        "name": "Platform 9 3/4",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "T",
+        "text": "To play this card, discard 1 of your lessons from play. You get 2 more Actions this turn."
+    },
+    "potion_ingredients": {
+        "name": "Potion Ingredients",
+        "type": "item",
+        "powerCost": 5,
+        "lessonCostType": "P",
+        "text": "When a Spell card damages you, you may discard this card from play to prevent all of that damage."
+    },
+    "raven_to_writing_desk": {
+        "name": "Raven to Writing Desk",
+        "type": "spell",
+        "powerCost": 1,
+        "lessonCostType": "T",
+        "text": "If your opponent has 2 or more Creatures in play, choose 1 of them and discard it."
+    },
+    "shrinking_potion": {
+        "name": "Shrinking Potion",
+        "type": "spell",
+        "powerCost": 8,
+        "lessonCostType": "P",
+        "text": "During your opponent's next turn, prevent all damage done to you."
+    },
+    "titillando": {
+        "name": "Titillando",
+        "type": "spell",
+        "powerCost": 9,
+        "lessonCostType": "C",
+        "text": "Do 3 damage to your opponent or to a Creature of your choice. Then your opponent chooses 3 cards in his or her hand and discards them. (If there are fewer than 3 cards in your opponent's hand, he or she discards them all.)"
+    },
+    "transfiguration_exam": {
+        "name": "Transfiguration Exam",
+        "type": "spell",
+        "powerCost": 10,
+        "lessonCostType": "T",
+        "text": "Discard all creatures from play (even your own)."
+    },
+    "transfiguration_test": {
+        "name": "Transfiguration Test",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "T",
+        "text": "If your opponent has 2 or more Creatures in play, he or she chooses 1 of them and discards the rest. Then, if you have 2 or more Creatures in play, choose 1 of them and discard the rest."
+    },
+    "4_privet_drive": {
+        "name": "4 Privet Drive",
+        "type": "adventure",
+        "effect": "Your opponent can't play Spell cards.",
+        "toSolve": "Your opponent chooses 6 cards in his or her hand and discards them.",
+        "reward": "Your opponent may draw a card."
+    },
+    "alchemy": {
+        "name": "Alchemy",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "T",
+        "text": "Search your deck. You may take up to 2 Lesson cards from your deck, show them to your opponent, and put them in your hand. Then shuffle your deck."
+    },
+    "apothecary": {
+        "name": "Apothecary",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 2 other cards from your hand. You may take a card that needs P Power from your deck, show it to your opponent and put it into your hand. Then shuffle your deck."
+    },
+    "apparate": {
+        "name": "Apparate",
+        "type": "spell",
+        "powerCost": 1,
+        "lessonCostType": "T",
+        "text": "Discard the Adventure your opponent has played. You don't get the reward."
+    },
+    "baby_dragon": {
+        "name": "Baby Dragon",
+        "type": "creature",
+        "powerCost": 3,
+        "lessonCostType": "F",
+        "damage": 3,
+        "health": 2,
+        "text": "To play this card, discard 1 of your F Lessons from play."
+    },
+    "bluebell_flames": {
+        "name": "Bluebell Flames",
+        "type": "spell",
+        "powerCost": 7,
+        "lessonCostType": "T",
+        "text": "Do 4 damage to your opponent or to a Creature of your choice."
+    },
+    "burning_bitterroot_balm": {
+        "name": "Burning Bitterroot Balm",
+        "type": "spell",
+        "subTypes": [
+            "healing"
+        ],
+        "powerCost": 6,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 1 of your P Lessons from play. Shuffle up to 10 non-Healing cards from your discard pile into your deck."
+    },
+    "cage": {
+        "name": "Cage",
+        "type": "item",
+        "powerCost": 2,
+        "lessonCostType": "F",
+        "provides": "1F",
+        "text": "During your turn, you may discard this card from play and use an Action to choose a Creature in play (yours or your opponent's) and return it to it's owner's hand."
+    },
+    "confundus": {
+        "name": "Confundus",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "C",
+        "text": "Your opponent chooses 2 cards in his or her hand and discards them (1 if he or she only has 1)."
+    },
+    "diagon_alley": {
+        "name": "Diagon Alley",
+        "type": "adventure",
+        "effect": "Your opponent can't use Actions to draw cards.",
+        "toSolve": "Your opponent skips a total of 7 Actions. (Those Actions don't need to be one right after the other.)",
+        "reward": "Your opponent may draw any number of cards."
+    },
+    "dogbreath_potion": {
+        "name": "Dogbreath Potion",
+        "type": "spell",
+        "powerCost": 6,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 1 of your P Lessons from play. Do 8 damage to your opponent or to a Creature of your choice."
+    },
+    "draco_s_trick": {
+        "name": "Draco's Trick",
+        "type": "spell",
+        "powerCost": 7,
+        "lessonCostType": "T",
+        "text": "Discard the Adventure you've played. You get the reward."
+    },
+    "dragon_heart_wand": {
+        "name": "Dragon Heart Wand",
+        "type": "item",
+        "subTypes": [
+            "wand"
+        ],
+        "powerCost": 5,
+        "lessonCostType": "C",
+        "provides": "3C",
+        "text": "Play this card only if you have cards in play that provides at least 2 C Power. If you play this card, and you already have a Wand in play, discard the old one."
+    },
+    "fumos": {
+        "name": "Fumos",
+        "type": "spell",
+        "powerCost": 7,
+        "lessonCostType": "C",
+        "text": "Do 2 damage to each Creature (even your own)."
+    },
+    "guard_dog": {
+        "name": "Guard Dog",
+        "type": "creature",
+        "powerCost": 7,
+        "lessonCostType": "F",
+        "damage": 3,
+        "health": 5
+    },
+    "hiding_from_snape": {
+        "name": "Hiding From Snape",
+        "type": "adventure",
+        "effect": "Your opponent can't play Item cards.",
+        "toSolve": "Your opponent chooses 4 Item cards in his or her hand and discards them.",
+        "reward": "Your opponent may search his or her deck for any card and put it into his or her hand. Then your opponent shuffles his or her deck."
+    },
+    "kelpie": {
+        "name": "Kelpie",
+        "type": "creature",
+        "powerCost": 3,
+        "lessonCostType": "F",
+        "damage": 1,
+        "health": 5,
+        "text": "To play this card, discard 1 of your F Lessons from play. Whenever a Spell card damages you, you may let Kelpie take that damage instead."
+    },
+    "logic_puzzle": {
+        "name": "Logic Puzzle",
+        "type": "spell",
+        "powerCost": 6,
+        "lessonCostType": "C",
+        "text": "Discard the Adventure your opponent has played. You get the reward."
+    },
+    "mysterious_egg": {
+        "name": "Mysterious Egg",
+        "type": "spell",
+        "powerCost": 4,
+        "lessonCostType": "F",
+        "text": "Search your deck. You may take a Creature card from your deck, show it to your opponent and put it into your hand. Then shuffle your deck."
+    },
+    "nurture": {
+        "name": "Nurture",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "F",
+        "text": "Remove all damage counters from all of your Creatures."
+    },
+    "ollivanders": {
+        "name": "Ollivanders",
+        "type": "spell",
+        "powerCost": 1,
+        "lessonCostType": "C",
+        "text": "Put an Item card from your discard pile into your hand."
+    },
+    "peeves_causes_trouble": {
+        "name": "Peeves Causes Trouble",
+        "type": "adventure",
+        "effect": "Whenever your opponent draws 1 or more cards, he or she then takes 1 damage.",
+        "toSolve": "Your opponent skips a total of 5 Actions. (Those Actions don't need to be one right after the other.)",
+        "reward": "You take 3 damage."
+    },
+    "pet_toad": {
+        "name": "Pet Toad",
+        "type": "creature",
+        "powerCost": 2,
+        "lessonCostType": "F",
+        "health": 1,
+        "text": "Whenever a Spell card damages you, you may let Pet Toad take that damage instead."
+    },
+    "pomfrey_s_pick_me_up": {
+        "name": "Pomfrey's Pick-Me-Up",
+        "type": "spell",
+        "subTypes": [
+            "healing"
+        ],
+        "powerCost": 3,
+        "lessonCostType": "P",
+        "text": "Put up to 3 non-Healing cards from your discard pile on the bottom of your deck (in any order). Then draw a card."
+    },
+    "potions_exam": {
+        "name": "Potions Exam",
+        "type": "spell",
+        "powerCost": 10,
+        "lessonCostType": "P",
+        "text": "Your opponent chooses 3 of his or her cards in play and discards them (if your opponent has fewer than 3 cards in play he or she discards them all). Your opponent may prevent this by discarding 1 of his or her P Lessons in play and discarding it."
+    },
+    "reptile_house": {
+        "name": "Reptile House",
+        "type": "adventure",
+        "effect": "Your opponent can't use more than 1 Action to play Lesson cards during each of his or her turns.",
+        "toSolve": "Your opponent chooses 4 of his or her Lessons in play and discards them.",
+        "reward": "Your opponent may draw a card."
+    },
+    "silver_cauldron": {
+        "name": "Silver Cauldron",
+        "type": "item",
+        "subTypes": [
+            "cauldron"
+        ],
+        "powerCost": 8,
+        "lessonCostType": "P",
+        "provides": "5P",
+        "text": "To play this card, discard 2 of your P Lessons from play."
+    },
+    "snuffling_potion": {
+        "name": "Snuffling Potion",
+        "type": "spell",
+        "powerCost": 4,
+        "lessonCostType": "P",
+        "text": "Next turn, whenever your opponent draws a card, he or she discards it instead of putting it into his or her hand."
+    },
+    "transmogrify": {
+        "name": "Transmogrify",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "T",
+        "text": "To play this card, discard 1 of your Creatures from play. Search your deck. You may take a Creature card from your deck, show it to your opponent and put it in your hand. Then shuffle your deck."
+    },
+    "unusual_pets": {
+        "name": "Unusual Pets",
+        "type": "adventure",
+        "effect": "Before each of your turns, your opponent takes 4 damage.",
+        "toSolve": "Your opponent chooses 2 of his or her Creatures in play and discards them.",
+        "reward": "Your opponent may draw a card.",
+        "text": "Play this card only if your opponent has any Creatures in play."
+    },
+    "vanishing_glass": {
+        "name": "Vanishing Glass",
+        "type": "spell",
+        "powerCost": 9,
+        "lessonCostType": "T",
+        "text": "Play this card only if your opponent has any Lessons in play. Choose 1 of those Lessons and discard it. Search your deck. You may take a Creature card from your deck, show it to your opponent and put it in your hand. Then shuffle your deck."
+    },
+    "winged_keys": {
+        "name": "Winged Keys",
+        "type": "item",
+        "powerCost": 10,
+        "lessonCostType": "T",
+        "text": "Once during each of your turns, you may choose 1 of your opponent's Creatures in play. Prevent all damage done by that creature until the end of your opponent's next turn."
+    },
+    "baubillious": {
+        "name": "Baubillious",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "C",
+        "text": "Do 1 damage to your opponent or to a Creature of your choice. Then draw a card."
+    },
+    "boil_cure": {
+        "name": "Boil Cure",
+        "type": "spell",
+        "subTypes": [
+            "healing"
+        ],
+        "powerCost": 1,
+        "lessonCostType": "P",
+        "text": "Put up to 4 non-Healing cards from your discard pile on the bottom of your deck (in any order)."
+    },
+    "borrowed_wand": {
+        "name": "Borrowed Wand",
+        "type": "item",
+        "subTypes": [
+            "wand"
+        ],
+        "powerCost": 3,
+        "lessonCostType": "C",
+        "provides": "2C",
+        "text": "If you play this card, and you already have a Wand in play, discard the old one."
+    },
+    "cauldron_to_sieve": {
+        "name": "Cauldron to Sieve",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "T",
+        "text": "Choose 1 of your opponent's P Lessons in play and discard it."
+    },
+    "dungbomb": {
+        "name": "Dungbomb",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "P",
+        "text": "During your opponent's next turn, prevent all damage done to you by your opponent's Adventures and Creatures."
+    },
+    "erumpent_potion": {
+        "name": "Erumpent Potion",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "P",
+        "text": "Do 1 damage to your opponent or to a creature of your choice."
+    },
+    "fluffy_falls_asleep": {
+        "name": "Fluffy Falls Asleep",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "F",
+        "text": "Choose a Creature in play and return it to its owner's hand."
+    },
+    "forgetfulness_potion": {
+        "name": "Forgetfulness Potion",
+        "type": "spell",
+        "powerCost": 7,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 1 of your P Lessons from play. During your opponent's next turn, he or she can't play cards."
+    },
+    "foul_brew": {
+        "name": "Foul Brew",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "P",
+        "text": "Do 2 damage to your opponent or to a Creature of your choice."
+    },
+    "giant_tarantula": {
+        "name": "Giant Tarantula",
+        "type": "creature",
+        "powerCost": 1,
+        "lessonCostType": "F",
+        "damage": 2,
+        "health": 1,
+        "text": "To play this card, discard 1 of your F Lessons from play."
+    },
+    "homework": {
+        "name": "Homework",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "T",
+        "text": "Put up to 2 Lesson cards from your hand into play."
+    },
+    "hospital_wing": {
+        "name": "Hospital Wing",
+        "type": "spell",
+        "subTypes": [
+            "healing"
+        ],
+        "powerCost": 4,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 1 of your P Lessons from play. Shuffle up to 8 non-Healing cards from your discard pile into your deck."
+    },
+    "illegibilus": {
+        "name": "Illegibilus",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "C",
+        "text": "Look at your opponent's hand. Choose 1 of those cards and discard it."
+    },
+    "lost_notes": {
+        "name": "Lost Notes",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "T",
+        "text": "Choose 1 of your opponent's Items or Lessons in play and discard it."
+    },
+    "noxious_potion": {
+        "name": "Noxious Potion",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 1 of your P Lessons from play. Do 5 damage to your opponent or to a Creature of your choice."
+    },
+    "out_of_the_woods": {
+        "name": "Out of the Woods",
+        "type": "spell",
+        "powerCost": 5,
+        "lessonCostType": "C",
+        "text": "Look at your opponent's hand. Discard all Creature cards from it."
+    },
+    "pet_rat": {
+        "name": "Pet Rat",
+        "type": "creature",
+        "powerCost": 1,
+        "lessonCostType": "F",
+        "damage": 1,
+        "health": 4,
+        "text": "To play this card, discard 1 of your F Lessons from play."
+    },
+    "pewter_cauldron": {
+        "name": "Pewter Cauldron",
+        "type": "item",
+        "subTypes": [
+            "cauldron"
+        ],
+        "powerCost": 5,
+        "lessonCostType": "P",
+        "provides": "3P",
+        "text": "To play this card, discard 1 of your P Lessons from play."
+    },
+    "potions_mistake": {
+        "name": "Potions Mistake",
+        "type": "spell",
+        "powerCost": 6,
+        "lessonCostType": "P",
+        "text": "To play this card, discard 3 of your P Lessons from play. Choose 1 of your opponent's Creatures or Items in play and discard it."
+    },
+    "remembrall": {
+        "name": "Remembrall",
+        "type": "item",
+        "powerCost": 8,
+        "lessonCostType": "T",
+        "text": "During your turn, you may use an Action to put a Lesson card from your discard pile into play."
+    },
+    "restricted_section": {
+        "name": "Restricted Section",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "T",
+        "text": "Choose 1 of your opponent's T Lessons in play and discard it."
+    },
+    "scottish_stag": {
+        "name": "Scottish Stag",
+        "type": "creature",
+        "powerCost": 4,
+        "lessonCostType": "F",
+        "damage": 1,
+        "health": 5
+    },
+    "snape_s_question": {
+        "name": "Snape's Question",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "P",
+        "text": "Do 4 damage to your opponent. Your opponent may prevent this damage by showing you a P Lesson from his or her hand."
+    },
+    "squiggle_quill": {
+        "name": "Squiggle Quill",
+        "type": "spell",
+        "powerCost": 2,
+        "lessonCostType": "T",
+        "text": "Choose 1 of your opponent's Items in play and discard it."
+    },
+    "steelclaw": {
+        "name": "Steelclaw",
+        "type": "spell",
+        "powerCost": 4,
+        "lessonCostType": "T",
+        "text": "All your creatures do damage to your opponent."
+    },
+    "toe_biter": {
+        "name": "Toe Biter",
+        "type": "spell",
+        "powerCost": 3,
+        "lessonCostType": "C",
+        "text": "Do 2 damage to your opponent. You may also choose a Creature and do 2 damage to it."
+    },
+    "wingardium_leviosa": {
+        "name": "Wingardium Leviosa!",
+        "type": "spell",
+        "powerCost": 1,
+        "lessonCostType": "C",
+        "text": "During your opponent's next turn, prevent all damage done to you by your opponent's Creatures."
+    },
+    "wizard_crackers": {
+        "name": "Wizard Crackers",
+        "type": "spell",
+        "powerCost": 1,
+        "lessonCostType": "C",
+        "text": "Reveal the top card of your deck. If it's a Lesson card, put it into play. If it isn't, put the card in your hand."
+    },
+    "lesson_potions": {
+        "name": "Potions",
+        "type": "lesson",
+        "lessonType": "P"
     }
 }
